@@ -1078,19 +1078,33 @@ async function makeLetterPages() {
   const pages = [[]];
   const page = () => pages.at(-1);
   const push = line => { if (page().length === PAGE.lines) pages.push([]); page().push(line); };
-  const fits = t => x.measureText(t).width <= slotWidth(page().length === PAGE.lines ? 0 : page().length);
+  const slotAt = k => (page().length + k) % PAGE.lines;
+  const w = t => x.measureText(t).width;
+  // 문장 하나를 cap 폭 안에서 띄어쓰기 단위로 나눔(한 단어가 너무 길면 글자 단위로)
+  const wrapLine = (src, cap) => {
+    const out = [], lim = () => Math.min(cap, slotWidth(slotAt(out.length)));
+    let cur = '';
+    for (const word of src.split(' ')) {
+      const t = cur ? `${cur} ${word}` : word;
+      if (w(t) <= lim()) { cur = t; continue; }
+      if (cur) out.push(cur);
+      cur = word;
+      while (w(cur) > lim()) { let k = cur.length; while (k > 1 && w(cur.slice(0, k)) > lim()) k--; out.push(cur.slice(0, k)); cur = cur.slice(k); }
+    }
+    out.push(cur);
+    return out;
+  };
+  // 여러 줄로 넘어가는 문장은 줄 수는 그대로 두고 줄 길이가 비슷해지게(끝에 한두 단어만 남는 줄 방지)
+  const balanced = src => {
+    const n = wrapLine(src, Infinity).length;
+    if (n < 2) return [src];
+    let lo = w(src) / n, hi = 600;
+    for (let it = 0; it < 14; it++) { const mid = (lo + hi) / 2; if (wrapLine(src, mid).length <= n) hi = mid; else lo = mid; }
+    return wrapLine(src, hi);
+  };
   for (const para of letterText.trim().split(/\n\s*\n/)) {
     if (page().length) { if (PAGE.lines - page().length < 3) pages.push([]); else push(''); }
-    for (const src of para.split('\n')) {
-      let cur = '';
-      for (const word of src.split(' ')) {
-        if (fits(cur ? `${cur} ${word}` : word)) { cur = cur ? `${cur} ${word}` : word; continue; }
-        if (cur) push(cur);
-        cur = word;
-        while (!fits(cur)) { let k = cur.length; while (k > 1 && !fits(cur.slice(0, k))) k--; push(cur.slice(0, k)); cur = cur.slice(k); }
-      }
-      push(cur);
-    }
+    for (const src of para.split('\n')) balanced(src).forEach(push);
   }
   // 종이(별·클립 포함) 영역만 잘라 확대
   const CROP = { x: 60, y: 200, w: 770, h: 1220 }, o = document.createElement('canvas');
