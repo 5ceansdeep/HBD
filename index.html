@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>효섭이 생일</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
+<style>
+  :root {
+    --pink: #ff2bd6; --cyan: #00f0ff; --lime: #b6ff00; --yellow: #fff200;
+    --ink: #111; --paper: #fffbe6; --bg: #2a0055;
+    --ios-green: #34c759; --ios-red: #ff3b30;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Do Hyeon', -apple-system, sans-serif;
+    background: #000; color: var(--ink);
+    overflow-x: hidden;
+  }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+  .hidden { display: none !important; }
+  .app { max-width: 430px; min-height: 100dvh; margin: 0 auto; position: relative; }
+
+  /* ---------- iOS call ---------- */
+  #call {
+    position: fixed; inset: 0; z-index: 50; color: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: calc(env(safe-area-inset-top) + 64px) 24px calc(env(safe-area-inset-bottom) + 48px);
+    background: radial-gradient(120% 80% at 50% 0%, #4a4e69 0%, #22223b 45%, #0b0b14 100%);
+    font-family: -apple-system, 'SF Pro Display', 'Apple SD Gothic Neo', sans-serif;
+  }
+  #call::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 40% at 30% 70%, rgba(255,43,214,.18), transparent 70%),
+                radial-gradient(50% 40% at 80% 30%, rgba(0,240,255,.14), transparent 70%);
+    backdrop-filter: blur(30px);
+  }
+  #call > * { position: relative; }
+  .call-sub { font-size: 17px; opacity: .7; }
+  .call-name { font-size: 34px; font-weight: 500; margin: 6px 0 4px; letter-spacing: -.5px; text-align: center; }
+  .avatar {
+    width: 112px; height: 112px; border-radius: 50%; margin-top: 28px;
+    display: grid; place-items: center; font-size: 44px; font-weight: 600;
+    background: linear-gradient(180deg, #a5a5ad, #6e6e76); color: #fff;
+    box-shadow: 0 0 0 0 rgba(255,255,255,.35); animation: ring 1.6s infinite;
+  }
+  @keyframes ring { 70% { box-shadow: 0 0 0 22px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+  .incoming-actions { margin-top: auto; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; }
+  .round-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; }
+  .round-btn i {
+    width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center;
+    font-style: normal; font-size: 32px;
+  }
+  .round-btn.red i { background: var(--ios-red); }
+  .round-btn.green i { background: var(--ios-green); animation: bounce 1s infinite; }
+  @keyframes bounce { 50% { transform: translateY(-6px); } }
+  .glass-row { display: flex; gap: 48px; margin-top: auto; margin-bottom: 36px; font-size: 13px; opacity: .85; }
+  .glass-row span { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .glass-row b {
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 400;
+    background: rgba(255,255,255,.14); backdrop-filter: blur(20px);
+  }
+  #ongoing { display: flex; flex-direction: column; align-items: center; width: 100%; flex: 1; }
+  .timer { font-size: 17px; opacity: .8; font-variant-numeric: tabular-nums; }
+  .subtitle {
+    margin-top: 24px; min-height: 120px; padding: 16px 18px; width: 100%;
+    background: rgba(255,255,255,.1); border-radius: 18px; backdrop-filter: blur(24px);
+    font-size: 17px; line-height: 1.5;
+  }
+  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 28px; margin-top: auto; }
+  .keypad span { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; }
+  .keypad b {
+    width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; font-weight: 400;
+    background: rgba(255,255,255,.14); backdrop-filter: blur(20px);
+  }
+  .end-btn { margin-top: 28px; width: 72px; height: 72px; border-radius: 50%; background: var(--ios-red); font-size: 30px; transform: rotate(135deg); }
+
+  /* reject popup */
+  #reject {
+    position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px;
+    background: rgba(0,0,0,.6);
+  }
+  .reject-card {
+    width: 100%; max-width: 340px; aspect-ratio: 1; border: 4px solid #000; box-shadow: 8px 8px 0 var(--pink);
+    background: #000 center/cover no-repeat; position: relative; display: flex; flex-direction: column;
+    justify-content: flex-end; animation: shake .4s infinite;
+  }
+  .reject-card p {
+    background: var(--yellow); color: #000; font-size: 26px; text-align: center; padding: 12px 8px; border-top: 4px solid #000;
+  }
+  .reject-card button { background: var(--ios-green); color: #fff; font-size: 20px; padding: 14px; border-top: 4px solid #000; }
+  @keyframes shake { 25% { transform: translate(-3px, 2px) rotate(-1deg); } 75% { transform: translate(3px, -2px) rotate(1deg); } }
+
+  /* ---------- rush overlay ---------- */
+  #rush { position: fixed; inset: 0; z-index: 70; background: #000; display: grid; place-items: center; overflow: hidden; }
+  .rush-zoom { animation: zoom 1.5s cubic-bezier(.55, 0, .9, .4) forwards; }
+  .rush-flip { animation: flip .2s steps(1) infinite; }
+  .rush-flip img { width: 160px; }
+  @keyframes zoom { from { transform: scale(.1); } to { transform: scale(3.4); } }
+  @keyframes flip { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } }
+
+  /* ---------- main (retro) ---------- */
+  #main {
+    min-height: 100dvh; padding: 20px 16px 48px;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(rgba(0,240,255,.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,.12) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .title {
+    text-align: center; color: var(--yellow); font-size: 30px; line-height: 1.2;
+    text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 #000; margin: 8px 0 20px;
+  }
+  .title small { display: block; font-family: 'Press Start 2P', monospace; font-size: 22px; color: var(--lime); margin-top: 10px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: .3; } }
+  .win { background: var(--paper); border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 20px; }
+  .win-bar {
+    display: flex; justify-content: space-between; align-items: center; padding: 6px 10px;
+    background: linear-gradient(90deg, var(--pink), var(--cyan)); border-bottom: 3px solid #000;
+    font-family: 'Press Start 2P', monospace; font-size: 9px; color: #000;
+  }
+  .win-body { padding: 16px; position: relative; }
+  .field { margin-bottom: 18px; position: relative; }
+  .field h3 { font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips label input { position: absolute; opacity: 0; pointer-events: none; }
+  .chips label span {
+    display: inline-block; padding: 8px 12px; border: 2px solid #000; background: #fff; font-size: 16px;
+    box-shadow: 3px 3px 0 #000; transition: transform .1s;
+  }
+  .chips label input:checked + span { background: var(--lime); transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+  .meme { position: absolute; width: 64px; border: 2px solid #000; background: #fff; z-index: 1; pointer-events: none; }
+  .meme.a { right: -10px; top: -26px; transform: rotate(12deg); animation: wobble 2s infinite; }
+  .meme.b { right: -8px; top: -22px; transform: rotate(-10deg); animation: wobble 2.4s infinite reverse; }
+  @keyframes wobble { 50% { transform: rotate(-8deg) scale(1.08); } }
+  .pixel-btn {
+    display: block; width: 100%; padding: 14px; font-size: 22px; color: #000; background: var(--yellow);
+    border: 3px solid #000; box-shadow: 5px 5px 0 #000;
+  }
+  .pixel-btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 #000; }
+  .pixel-btn.ghost { background: #fff; font-size: 18px; }
+  .row { display: flex; gap: 12px; }
+  .shake { animation: shake .3s 2; }
+
+  /* ticket */
+  .ticket { background: var(--paper); border: 3px solid #000; box-shadow: 6px 6px 0 var(--pink); margin-bottom: 20px; }
+  .ticket-head { background: #000; color: var(--lime); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .ticket-head b { font-family: 'Press Start 2P', monospace; font-size: 12px; font-weight: 400; }
+  .ticket-head span { font-size: 18px; color: var(--yellow); }
+  .timeline { position: relative; padding: 22px 16px 8px 64px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 35px; top: 34px; width: 4px; height: 0; background: var(--pink);
+  }
+  .timeline.play::before { animation: draw 1.8s ease-out forwards; }
+  @keyframes draw { to { height: calc(100% - 80px); } }
+  .stop { position: relative; margin-bottom: 26px; opacity: 0; }
+  .timeline.play .stop { animation: pop .4s forwards; }
+  .timeline.play .stop:nth-child(2) { animation-delay: .8s; }
+  .timeline.play .stop:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes pop { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+  .stop img { position: absolute; left: -48px; top: -6px; width: 36px; height: 36px; border-radius: 50%; border: 2px solid #000; background: #fff; object-fit: cover; animation: spin 1.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .stop time { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--pink); }
+  .stop p { font-size: 20px; margin-top: 4px; }
+  .perf { border-top: 3px dashed #000; margin: 0 12px; position: relative; }
+  .perf::before, .perf::after {
+    content: ''; position: absolute; top: -14px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--bg); border: 3px solid #000;
+  }
+  .perf::before { left: -27px; } .perf::after { right: -27px; }
+  .no-capture { display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-size: 22px; }
+  .no-capture img { width: 72px; border: 2px solid #000; }
+
+  /* letter */
+  .banner { width: 100%; border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 20px; }
+  .countdown {
+    font-family: 'Press Start 2P', monospace; font-size: 22px; text-align: center; color: var(--cyan);
+    background: #000; border: 3px solid var(--cyan); padding: 16px 8px; margin-bottom: 20px;
+    text-shadow: 0 0 8px var(--cyan);
+  }
+  .countdown small { display: block; font-family: 'Do Hyeon', sans-serif; font-size: 16px; color: #fff; text-shadow: none; margin-bottom: 10px; }
+  .safe { text-align: center; padding: 8px 0 4px; }
+  .safe button { font-size: 96px; line-height: 1; position: relative; animation: wobble 1.6s infinite; }
+  .safe .lock { position: absolute; right: -14px; bottom: -6px; font-size: 44px; }
+  .safe.open .lock { animation: unlock .8s forwards; }
+  @keyframes unlock { 40% { transform: translateY(-20px) rotate(-30deg); } to { transform: translateY(-120px) rotate(-90deg); opacity: 0; } }
+  .safe p { font-size: 18px; margin-top: 12px; }
+  .letter {
+    background: #fff; border: 3px solid #000; padding: 22px 18px; font-size: 19px; line-height: 1.7;
+    white-space: pre-line; animation: rise .8s ease-out;
+    background-image: repeating-linear-gradient(transparent 0 31px, #ffd1f2 31px 32px);
+  }
+  @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+
+  #toast {
+    position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 28px); transform: translateX(-50%);
+    z-index: 90; background: #000; color: var(--lime); border: 2px solid var(--lime);
+    padding: 10px 16px; font-size: 17px; white-space: nowrap; transition: opacity .3s; opacity: 0; pointer-events: none;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 0. incoming / ongoing call -->
+  <section id="call">
+    <div id="incoming" style="display:contents">
+      <p class="call-sub">휴대전화</p>
+      <h1 class="call-name" data-name></h1>
+      <div class="avatar" data-avatar></div>
+      <div class="glass-row"><span><b>⏰</b>알림</span><span><b>💬</b>메시지</span></div>
+      <div class="incoming-actions">
+        <button class="round-btn red" id="btnReject"><i>📵</i>거절</button>
+        <button class="round-btn green" id="btnAccept"><i>📞</i>수락</button>
+      </div>
+    </div>
+    <div id="ongoing" class="hidden">
+      <h1 class="call-name" data-name></h1>
+      <p class="timer" id="callTimer">00:00</p>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="keypad">
+        <span><b>🔇</b>소리 끔</span><span><b>⌨️</b>키패드</span><span><b>🔊</b>스피커</span>
+        <span><b>➕</b>통화 추가</span><span><b>📹</b>FaceTime</span><span><b>👤</b>연락처</span>
+      </div>
+      <button class="end-btn" id="btnEnd" aria-label="통화 종료">📞</button>
+    </div>
+  </section>
+
+  <div id="reject" class="hidden">
+    <div class="reject-card" id="rejectCard">
+      <p>거절 불가! 무조건 받아야 함 🤪</p>
+      <button id="btnForce">📞 네… 받을게요</button>
+    </div>
+  </div>
+
+  <!-- 0-1. rush overlay -->
+  <div id="rush" class="hidden">
+    <div class="rush-zoom"><div class="rush-flip"><img id="rushImg" alt=""></div></div>
+  </div>
+
+  <!-- main -->
+  <main id="main" class="hidden">
+    <h1 class="title">효섭이 엄청<br>잘해주는 날<small id="dday">D-1</small></h1>
+
+    <!-- 1. plan -->
+    <section id="plan" class="hidden">
+      <div class="win">
+        <div class="win-bar"><span>DATE_COURSE.EXE</span><span>_ □ ×</span></div>
+        <form class="win-body" id="planForm">
+          <div class="field"><h3>⏰ 몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
+          <div class="field"><img class="meme a" data-img="MEME_CARD_1_IMG" alt=""><h3>📍 어디서 만나?</h3><div class="chips" data-chips="place"></div></div>
+          <div class="field"><h3>🎡 메인 코스</h3><div class="chips" data-chips="course"></div></div>
+          <div class="field"><img class="meme b" data-img="MEME_CARD_2_IMG" alt=""><h3>🍽 저녁 메뉴</h3><div class="chips" data-chips="dinner"></div></div>
+          <button class="pixel-btn" type="submit">🎫 티켓 발권하기</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. ticket -->
+    <section id="ticketView" class="hidden">
+      <div class="ticket">
+        <div class="ticket-head"><b>BOARDING PASS</b><span>효섭 ✈ 행복</span></div>
+        <div class="timeline" id="timeline">
+          <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="0"></time><p data-p="0"></p></div>
+          <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="1"></time><p data-p="1"></p></div>
+          <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="2"></time><p data-p="2"></p></div>
+        </div>
+        <div class="perf"></div>
+        <div class="no-capture"><img data-img="NERD_DOG_IMG" alt=""><span>캡처 불가 🤪</span></div>
+      </div>
+      <div class="row">
+        <button class="pixel-btn ghost" id="btnBack">↩ 다시</button>
+        <button class="pixel-btn" id="btnDecide">✅ 결정하기</button>
+      </div>
+    </section>
+
+    <!-- 3. letter -->
+    <section id="letterView" class="hidden">
+      <img class="banner" data-img="COMING_SOON_IMG" alt="">
+      <div class="countdown" id="countdown"><small>19:00 편지 오픈까지</small><span id="cdText">--:--:--</span></div>
+      <div class="win">
+        <div class="win-bar"><span>LETTER.TXT</span><span>_ □ ×</span></div>
+        <div class="win-body">
+          <div class="safe" id="safe">
+            <button id="btnSafe">💌<span class="lock">🔒</span></button>
+            <p>19:00에 오픈됩니다!<br>(1분당 1번만 클릭 가능)</p>
+          </div>
+          <div class="letter hidden" id="letter"></div>
+        </div>
+      </div>
+      <button class="pixel-btn ghost" id="btnReset">🔄 데이트 코스 다시 결정하기</button>
+    </section>
+  </main>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+// ===== 이미지 (교체용) =====
+const RUNNING_MEME_IMG = 'https://placehold.co/300x300/ff2bd6/000?text=RUN';
+const MILESTONE_CAKE_GIF = 'https://placehold.co/80x80/fff200/000?text=🎂';
+const MEME_CARD_1_IMG = 'https://placehold.co/120x120/b6ff00/000?text=MEME1';
+const MEME_CARD_2_IMG = 'https://placehold.co/120x120/00f0ff/000?text=MEME2';
+const FAIL_WARNING_IMG = 'https://placehold.co/400x400/ff3b30/fff?text=FAIL';
+const NERD_DOG_IMG = 'https://placehold.co/120x120/fffbe6/000?text=NERD';
+const COMING_SOON_IMG = 'https://placehold.co/800x300/000/b6ff00?text=COMING+SOON';
+
+// ===== 설정 =====
+const BIRTHDAY = '2026-09-26';   // 생일 (편지는 이 날 19:00 오픈)
+const KAKAO_JS_KEY = '';         // Kakao Developers JavaScript 키. 비어 있으면 기본 공유/복사로 대체
+const LETTER = `효섭아 생일 축하해 🎂
+
+여기에 진심 어린 편지를 써 줘.
+줄바꿈도 그대로 보여.
+
+- 너의 여자친구가`;
+
+const CALLERS = [
+  { name: '일론 머스크', avatar: 'EM', pitch: 0.8, rate: 0.95,
+    line: '안녕 효섭. 나의 화성 식민지 개척 프로젝트보다 너의 생일이 더 중요하다. 선물로 테슬라 주식 0.00001주를 송금했다. 계좌를 확인해라.' },
+  { name: '장원영', avatar: '원영', pitch: 1.5, rate: 1.1,
+    line: '오늘 효섭이 생일이라구? 완전 럭키효섭이잖아! 1년에 딱 하루 있는 날을 나랑 전화하면서 시작하다니, 너 진짜 완전 행운아다!' },
+  { name: '페이커 (이상혁)', avatar: 'T1', pitch: 1.0, rate: 1.0,
+    line: '효섭 선수, 오늘 생일 딜교 완벽했습니다. 오늘 저녁은 오마카세 동선으로 깔끔하게 미는 걸 추천합니다. 생일 축하드립니다.' },
+];
+
+const OPTIONS = {
+  time: ['14:00', '15:00', '16:00'],
+  place: ['강남역', '성수역', '홍대입구역', '잠실 롯데월드몰'],
+  course: ['방탈출 카페', '보드게임 카페', '한강 피크닉', '전시회 관람', '놀이공원'],
+  dinner: ['오마카세', '삼겹살', '파스타', '마라탕', '한우 코스'],
+};
+
+// ===== helpers =====
+const $ = s => document.querySelector(s);
+const IMGS = { RUNNING_MEME_IMG, MILESTONE_CAKE_GIF, MEME_CARD_1_IMG, MEME_CARD_2_IMG, FAIL_WARNING_IMG, NERD_DOG_IMG, COMING_SOON_IMG };
+document.querySelectorAll('[data-img]').forEach(el => el.src = IMGS[el.dataset.img]);
+$('#rushImg').src = RUNNING_MEME_IMG;
+$('#rejectCard').style.backgroundImage = `url("${FAIL_WARNING_IMG}")`;
+
+const KEY = 'hbd';
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
+const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
+let state = load();
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function shake(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function show(id) { ['#plan', '#ticketView', '#letterView'].forEach(s => $(s).classList.toggle('hidden', s !== id)); scrollTo(0, 0); }
+function boom() {
+  if (!window.confetti) return;
+  confetti({ particleCount: 180, spread: 100, origin: { y: .6 }, zIndex: 100 });
+  confetti({ particleCount: 80, angle: 60, spread: 70, origin: { x: 0 }, zIndex: 100 });
+  confetti({ particleCount: 80, angle: 120, spread: 70, origin: { x: 1 }, zIndex: 100 });
+}
+const openAt = new Date(`${BIRTHDAY}T19:00:00`);
+
+// D-day 타이틀
+{
+  const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diff = Math.round((day(openAt) - day(new Date())) / 864e5);
+  $('#dday').textContent = diff > 0 ? `D-${diff}` : diff === 0 ? 'D-DAY' : `D+${-diff}`;
+}
+
+// ===== 0. call =====
+const caller = CALLERS[Math.floor(Math.random() * CALLERS.length)];
+document.querySelectorAll('[data-name]').forEach(el => el.textContent = caller.name);
+$('[data-avatar]').textContent = caller.avatar;
+
+let accepted = false, ended = false, tick, fallback;
+function accept() {
+  if (accepted) return;
+  accepted = true;
+  $('#reject').classList.add('hidden');
+  $('#incoming').classList.add('hidden');
+  $('#ongoing').classList.remove('hidden');
+
+  let sec = 0;
+  const fmt = n => String(n).padStart(2, '0');
+  tick = setInterval(() => { sec++; $('#callTimer').textContent = `${fmt(sec / 60 | 0)}:${fmt(sec % 60)}`; }, 1000);
+
+  // 자막 타이핑
+  const sub = $('#subtitle'); let i = 0;
+  const type = setInterval(() => { sub.textContent = caller.line.slice(0, ++i); if (i >= caller.line.length) clearInterval(type); }, 70);
+
+  // TTS: iOS는 클릭 핸들러 안에서 바로 speak 해야 소리 남
+  // 인앱 브라우저에서 onend가 안 오는 경우 대비해 길이 기반 타이머로도 종료
+  fallback = setTimeout(endCall, caller.line.length * 220 + 2500);
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(caller.line);
+    u.lang = 'ko-KR'; u.pitch = caller.pitch; u.rate = caller.rate;
+    const v = speechSynthesis.getVoices().find(v => v.lang.startsWith('ko'));
+    if (v) u.voice = v;
+    u.onend = () => setTimeout(endCall, 600);
+    speechSynthesis.speak(u);
+  }
+}
+function endCall() {
+  if (ended) return;
+  ended = true;
+  clearInterval(tick); clearTimeout(fallback);
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  rush();
+}
+$('#btnAccept').onclick = accept;
+$('#btnEnd').onclick = endCall;
+$('#btnForce').onclick = accept;
+$('#btnReject').onclick = () => $('#reject').classList.remove('hidden');
+
+// ===== 0-1. rush =====
+function rush() {
+  $('#rush').classList.remove('hidden');
+  $('#call').classList.add('hidden');
+  setTimeout(() => {
+    boom();
+    $('#rush').classList.add('hidden');
+    $('#main').classList.remove('hidden');
+    state.confirmed ? showLetter() : show('#plan');
+  }, 1500);
+}
+
+// ===== 1. plan =====
+for (const [key, list] of Object.entries(OPTIONS)) {
+  $(`[data-chips="${key}"]`).innerHTML = list
+    .map(v => `<label><input type="radio" name="${key}" value="${v}"><span>${v}</span></label>`).join('');
+}
+function planStops(p) {
+  const [h, m] = p.time.split(':').map(Number);
+  const next = `${String(h + 1).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  return [[p.time, `${p.place} 만남`], [next, `${p.course} 데이트 시작`], ['18:30', `${p.dinner} 맛있는 저녁 식사`]];
+}
+let plan;
+$('#planForm').onsubmit = e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const p = Object.fromEntries(Object.keys(OPTIONS).map(k => [k, f.get(k)]));
+  if (Object.values(p).some(v => !v)) { shake(e.target); return toast('다 골라야 함 🤪'); }
+  plan = p;
+  planStops(p).forEach(([t, txt], i) => { $(`[data-t="${i}"]`).textContent = t; $(`[data-p="${i}"]`).textContent = txt; });
+  show('#ticketView');
+  const tl = $('#timeline'); tl.classList.remove('play'); void tl.offsetWidth; tl.classList.add('play');
+};
+$('#btnBack').onclick = () => show('#plan');
+
+// ===== 2. decide + share =====
+function share(p) {
+  const text = '🎂 효섭 생일 데이트 확정!\n\n' + planStops(p).map(([t, s]) => `${t} ${s}`).join('\n');
+  try {
+    if (window.Kakao && KAKAO_JS_KEY) {
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_KEY);
+      return Kakao.Share.sendDefault({ objectType: 'text', text, link: { mobileWebUrl: location.href, webUrl: location.href } });
+    }
+  } catch (err) { console.warn(err); }
+  if (navigator.share) return navigator.share({ text }).catch(() => {});
+  navigator.clipboard?.writeText(text).then(() => toast('복사됨! 카톡에 붙여넣기 ㄱㄱ'));
+}
+$('#btnDecide').onclick = () => {
+  share(plan);
+  state = { ...state, confirmed: true, plan };
+  save(state);
+  boom();
+  showLetter();
+};
+
+// ===== 3. letter =====
+let cd;
+function showLetter() {
+  show('#letterView');
+  $('#safe').classList.remove('hidden', 'open');
+  $('#letter').classList.add('hidden');
+  const fmt = n => String(n).padStart(2, '0');
+  const render = () => {
+    const ms = openAt - Date.now();
+    if (ms <= 0) { $('#cdText').textContent = 'OPEN!'; return clearInterval(cd); }
+    const s = ms / 1000 | 0, d = s / 86400 | 0;
+    $('#cdText').textContent = (d ? `${d}D ` : '') + `${fmt(s / 3600 % 24 | 0)}:${fmt(s / 60 % 60 | 0)}:${fmt(s % 60)}`;
+  };
+  clearInterval(cd); render(); cd = setInterval(render, 1000);
+}
+$('#btnSafe').onclick = () => {
+  if (Date.now() >= openAt) {
+    $('#safe').classList.add('open');
+    boom();
+    return setTimeout(() => {
+      $('#safe').classList.add('hidden');
+      const l = $('#letter'); l.textContent = LETTER; l.classList.remove('hidden');
+    }, 800);
+  }
+  const wait = 60 - ((Date.now() - (state.lastTap || 0)) / 1000 | 0);
+  if (wait > 0) return toast(`1분에 1번만! ${wait}초 뒤에 다시 🤪`);
+  state.lastTap = Date.now(); save(state);
+  shake($('#btnSafe'));
+  toast('아직 안 열림 ㅋ 19시까지 기다려');
+};
+$('#btnReset').onclick = () => {
+  if (!confirm('데이트 코스 다시 고를래?')) return;
+  try { localStorage.removeItem(KEY); } catch {}
+  state = {};
+  clearInterval(cd);
+  $('#planForm').reset();
+  show('#plan');
+};
+</script>
+</body>
+</html>
