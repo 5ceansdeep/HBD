@@ -133,6 +133,21 @@
   }
   .chips label input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff; }
   .chips label input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chips .play {
+    display: inline-grid; place-items: center; width: 22px; height: 22px; margin: -2px -6px -2px 6px; vertical-align: middle;
+    border-radius: 50%; background: var(--accent); color: #fff;
+  }
+  .chips .play svg { width: 10px; height: 10px; margin-left: 1px; }
+  #reel { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; background: rgba(0,0,0,.5); }
+  .sheet {
+    width: 100%; max-width: 430px; margin: 0 auto; background: #fff; border-radius: 22px 22px 0 0;
+    padding: 12px 16px calc(env(safe-area-inset-bottom) + 16px); animation: up .25s ease-out;
+  }
+  @keyframes up { from { transform: translateY(100%); } }
+  .sheet iframe { display: block; width: 100%; height: min(70dvh, 640px); border: 0; border-radius: 14px; background: var(--card); }
+  .sheet-bar { display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 12px; font-size: 15px; font-weight: 700; }
+  .sheet-bar a { color: var(--accent); font-size: 14px; text-decoration: none; }
+  .sheet .btn { margin-top: 12px; }
   .btn {
     display: block; width: 100%; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700;
     background: var(--accent); color: #fff; transition: transform .1s;
@@ -201,6 +216,7 @@
     <symbol id="i-speaker" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-video" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M6 3.5v17a1 1 0 0 0 1.5.9l14-8.5a1 1 0 0 0 0-1.8l-14-8.5A1 1 0 0 0 6 3.5z"/></symbol>
     <symbol id="i-person" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM4 21a8 8 0 0 1 16 0"/></symbol>
   </svg>
   <section id="call">
@@ -295,6 +311,14 @@
     </section>
   </main>
 
+  <div id="reel" class="hidden">
+    <div class="sheet">
+      <div class="sheet-bar"><span id="reelTitle"></span><a id="reelLink" target="_blank" rel="noopener">인스타그램에서 열기</a></div>
+      <iframe id="reelFrame" allowfullscreen></iframe>
+      <button class="btn ghost" id="reelClose">닫기</button>
+    </div>
+  </div>
+
   <div id="toast"></div>
 </div>
 
@@ -332,6 +356,20 @@ const OPTIONS = {
   place: ['강남역', '성수역', '홍대입구역', '잠실 롯데월드몰'],
   course: ['방탈출 카페', '보드게임 카페', '한강 피크닉', '전시회 관람', '놀이공원'],
   dinner: ['오마카세', '삼겹살', '파스타', '마라탕', '한우 코스'],
+};
+
+// 선택지별 인스타 릴스 링크 (인스타 앱 '공유 → 링크 복사' 한 주소 그대로). 비워두면 재생 버튼 안 뜸
+const REELS = {
+  '방탈출 카페': '',
+  '보드게임 카페': '',
+  '한강 피크닉': '',
+  '전시회 관람': '',
+  '놀이공원': '',
+  '오마카세': '',
+  '삼겹살': '',
+  '파스타': '',
+  '마라탕': '',
+  '한우 코스': '',
 };
 
 // ===== helpers =====
@@ -452,8 +490,29 @@ function rush() {
 // ===== 1. plan =====
 for (const [key, list] of Object.entries(OPTIONS)) {
   $(`[data-chips="${key}"]`).innerHTML = list
-    .map(v => `<label><input type="radio" name="${key}" value="${v}"><span>${v}</span></label>`).join('');
+    .map(v => `<label><input type="radio" name="${key}" value="${v}"><span>${v}${REELS[v] ? `<button type="button" class="play" data-reel="${v}" aria-label="${v} 릴스 보기"><svg><use href="#i-play"/></svg></button>` : ''}</span></label>`).join('');
 }
+
+// 릴스 보기: 버튼은 label 안의 버튼이라 눌러도 선택은 안 바뀜
+const reelEmbed = url => {
+  const m = url.match(/instagram\.com\/(reels?|p)\/([\w-]+)/);
+  return m && `https://www.instagram.com/${m[1] === 'p' ? 'p' : 'reel'}/${m[2]}/embed/`;
+};
+$('#planForm').addEventListener('click', e => {
+  const b = e.target.closest('[data-reel]');
+  if (!b) return;
+  const url = REELS[b.dataset.reel], embed = reelEmbed(url);
+  if (!embed) return open(url, '_blank');
+  $('#reelTitle').textContent = b.dataset.reel;
+  $('#reelLink').href = url;
+  $('#reelFrame').src = embed;
+  $('#reel').classList.remove('hidden');
+});
+$('#reelClose').onclick = $('#reel').onclick = e => {
+  if (e.target !== e.currentTarget) return;
+  $('#reel').classList.add('hidden');
+  $('#reelFrame').src = 'about:blank';
+};
 function planStops(p) {
   const [h, m] = p.time.split(':').map(Number);
   const next = `${String(h + 1).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
