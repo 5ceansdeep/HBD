@@ -262,14 +262,15 @@
   .stop { position: relative; margin-bottom: 26px; opacity: 0; }
   .timeline.play .stop { animation: pop .4s forwards; }
   @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .stop img { position: absolute; left: -48px; top: 2px; width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--accent-soft); box-shadow: 0 0 0 4px var(--card); }
+  .stop .dot { position: absolute; left: -48px; top: 2px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); box-shadow: 0 0 0 4px var(--card); }
+  .stop .dot svg { width: 18px; height: 18px; }
   .stop time { font-size: 13px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
   .stop p { font-size: 17px; font-weight: 600; margin-top: 2px; }
   .perf { border-top: 2px dashed var(--line); margin: 0 18px; position: relative; }
   .perf::before, .perf::after { content: ''; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
   .perf::before { left: -30px; } .perf::after { right: -30px; }
   .no-capture { display: flex; align-items: center; gap: 12px; padding: 16px 20px; font-size: 15px; font-weight: 600; color: var(--sub); }
-  .no-capture img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
+  .barcode { flex: none; width: 64px; height: 40px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 7px, var(--ink) 7px 10px, transparent 10px 12px); opacity: .75; }
 
   /* letter */
   .countdown { text-align: center; }
@@ -352,6 +353,8 @@
     <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-video" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></symbol>
     <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+    <symbol id="i-food" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.2-3.5 3.6-3.5 7v3H17"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM14.5 9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 7v5l3 2"/></symbol>
     <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></symbol>
@@ -431,8 +434,8 @@
         <div class="wiz-vp">
           <div class="field slide"><h3><b class="tile"><svg><use href="#i-clock"/></svg></b>몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
           <div class="field slide hidden"><h3><b class="tile"><svg><use href="#i-pin"/></svg></b>어디서 놀까?</h3><p class="hint">▶ 릴스 눌러서 미리 보고 골라도 돼요</p><div class="chips" data-chips="place"></div></div>
-          <div class="field slide hidden"><h3><img data-img="MEME_CARD_1_IMG" alt="">뭐 할까? <small id="areaSub"></small></h3><p class="hint">여러 개 골라도 돼요</p><div class="opts" data-opts="course"></div><button type="button" class="btn" id="courseNext" disabled>다음</button></div>
-          <div class="field slide hidden"><h3><img data-img="MEME_CARD_2_IMG" alt="">뭐 먹을까?</h3><div class="opts" data-opts="dinner"></div><button class="btn" type="submit">티켓 발권하기</button></div>
+          <div class="field slide hidden"><h3><b class="tile"><svg><use href="#i-star"/></svg></b>뭐 할까? <small id="areaSub"></small></h3><p class="hint">여러 개 골라도 돼요</p><div class="opts" data-opts="course"></div><button type="button" class="btn" id="courseNext" disabled>다음</button></div>
+          <div class="field slide hidden"><h3><b class="tile"><svg><use href="#i-food"/></svg></b>뭐 먹을까?</h3><div class="opts" data-opts="dinner"></div><button class="btn" type="submit">티켓 발권하기</button></div>
         </div>
       </form>
     </section>
@@ -444,7 +447,7 @@
         <div class="timeline" id="timeline">
         </div>
         <div class="perf"></div>
-        <div class="no-capture"><img data-img="NERD_DOG_IMG" alt=""><span>환불·양도·취소 불가 (효섭 전용)</span></div>
+        <div class="no-capture"><i class="barcode"></i><span>환불·양도·취소 불가 (효섭 전용)</span></div>
       </div>
       <div class="row">
         <button class="btn ghost" id="btnBack">다시</button>
@@ -477,7 +480,7 @@
     </div>
   </div>
 
-  <div id="pwAlert" class="hidden"><div class="alert"><b>편지 비밀번호</b><p id="pwMsg"></p><input id="pwInput" type="password" autocomplete="off" aria-label="편지 비밀번호"><div class="alert-btns"><button id="pwCancel">취소</button><button id="pwOk">확인</button></div></div></div>
+  <div id="pwAlert" class="hidden"><div class="alert"><b>편지 비밀번호</b><p id="pwMsg"></p><input id="pwInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="편지 비밀번호"><div class="alert-btns"><button id="pwCancel">취소</button><button id="pwOk">확인</button></div></div></div>
   <div id="sysAlert" class="hidden"><div class="alert"><b id="alertTitle"></b><p id="alertMsg"></p><div class="alert-btns"><button id="alertCancel">취소</button><button id="alertOk">다운로드</button></div></div></div>
   <div id="gallery" class="hidden">
     <div class="gallery-bar"><span>이미지를 길게 눌러 사진에 저장하세요</span><button id="galleryClose">닫기</button></div>
@@ -494,11 +497,7 @@
 <script>
 // ===== 이미지 (교체용) =====
 const RUNNING_MEME_IMG = 'party_dog.png';
-const MILESTONE_CAKE_GIF = 'https://placehold.co/80x80/fff200/000?text=CAKE';
-const MEME_CARD_1_IMG = 'https://placehold.co/120x120/b6ff00/000?text=MEME1';
-const MEME_CARD_2_IMG = 'https://placehold.co/120x120/00f0ff/000?text=MEME2';
 const FAIL_WARNING_IMG = 'fail_lion.webp';
-const NERD_DOG_IMG = 'https://placehold.co/120x120/fffbe6/000?text=NERD';
 const PARTY_CAKE_IMG = 'cake.webp';         // 파티 화면: 강아지 앞 케이크
 const PARTY_THROW_IMG = 'cake_throw.webp';
 const PARTY_COOKIE_IMG = 'cookie.webp';     // 파티 화면: 오른쪽에서 흔들흔들 쿠키몬스터  // 파티 화면: 옆에서 나대며 케이크 던지기
@@ -589,7 +588,7 @@ const AREAS = {
 
 // ===== helpers =====
 const $ = s => document.querySelector(s);
-const IMGS = { RUNNING_MEME_IMG, MILESTONE_CAKE_GIF, MEME_CARD_1_IMG, MEME_CARD_2_IMG, FAIL_WARNING_IMG, NERD_DOG_IMG, PARTY_CAKE_IMG, PARTY_THROW_IMG, PARTY_COOKIE_IMG };
+const IMGS = { RUNNING_MEME_IMG, FAIL_WARNING_IMG, PARTY_CAKE_IMG, PARTY_THROW_IMG, PARTY_COOKIE_IMG };
 document.querySelectorAll('[data-img]').forEach(el => el.src = IMGS[el.dataset.img]);
 $('#rushImg').src = RUNNING_MEME_IMG;
 
@@ -640,15 +639,18 @@ const openAt = new Date(`${BIRTHDAY}T19:00:00`);
 // ===== 0. call =====
 // 세 명이 차례로 전화 → 마지막 통화 끝나면 파티
 let ci = -1, caller, accepted, ended, tick, typer, fallback, ac;
-// 벨소리: 마림바 느낌 합성음(사인파 + 짧은 4배음). 브라우저는 첫 터치 전엔 소리를 막아서
+// 벨소리: 마림바 느낌 합성음(사인파 + 배음). 브라우저는 첫 터치 전엔 소리를 막아서
 // 잠금화면 터치로 풀어준 뒤 전화가 울림
 try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+// iOS는 합성음(Web Audio)을 무음 모드에서 꺼버림 → '미디어 재생'으로 지정(iOS 16.4+)
+try { navigator.audioSession.type = 'playback'; } catch {}
 const unlock = () => ac?.resume();
 ['pointerdown', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, unlock, { capture: true, passive: true }));
 function marimba(f, t, out) {
   // 마림바 배음: 기음 + 약 4배음 + 약 10배음(타격음), 높은 배음일수록 빨리 사라짐
+  const cx = out.context;
   [[1, .5, .5], [3.93, .18, .12], [9.2, .06, .04]].forEach(([mul, vol, len]) => {
-    const o = ac.createOscillator(), g = ac.createGain();
+    const o = cx.createOscillator(), g = cx.createGain();
     o.frequency.value = f * mul;
     g.gain.setValueAtTime(.0001, t);
     g.gain.exponentialRampToValueAtTime(vol, t + .005);
@@ -658,10 +660,30 @@ function marimba(f, t, out) {
 }
 const RING = [[1318.5, 0], [987.77, .14], [830.61, .28], [987.77, .42], [1318.5, .56], [1108.7, .84], [987.77, .98], [1318.5, 1.12]];
 let ringTimer, ringOut;
-const ringAudio = RINGTONE_SRC ? Object.assign(new Audio(RINGTONE_SRC), { loop: true }) : null;
+// 벨소리 파일(RINGTONE_SRC)이 없으면 합성 마림바 2초를 WAV로 미리 구워 일반 오디오로 반복 재생
+// (일반 오디오는 목소리 mp3처럼 아이폰 무음 모드에서도 들림)
+let ringAudio = RINGTONE_SRC ? Object.assign(new Audio(RINGTONE_SRC), { loop: true }) : null;
+function wavURL(buf) {
+  const d = buf.getChannelData(0), n = d.length, v = new DataView(new ArrayBuffer(44 + n * 2));
+  const str = (o, s) => [...s].forEach((ch, i) => v.setUint8(o + i, ch.charCodeAt(0)));
+  str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, buf.sampleRate, true); v.setUint32(28, buf.sampleRate * 2, true);
+  v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
+  d.forEach((x, i) => v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, x)) * 32767, true));
+  return URL.createObjectURL(new Blob([v], { type: 'audio/wav' }));
+}
+if (!ringAudio) {
+  try {
+    const off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 44100 * 2, 44100), out = off.createGain();
+    out.gain.value = .6; out.connect(off.destination);
+    RING.forEach(([f, dt]) => marimba(f, .02 + dt, out));
+    off.startRendering().then(buf => { ringAudio = Object.assign(new Audio(wavURL(buf)), { loop: true }); });
+  } catch {}
+}
 function startRingtone() {
   stopRingtone();
   if (ringAudio) { ringAudio.currentTime = 0; ringAudio.play().catch(() => {}); return; }
+  // WAV가 아직 안 만들어졌으면 합성음으로 바로 울림
   if (!ac) return;
   ringOut = ac.createGain(); ringOut.gain.value = .6; ringOut.connect(ac.destination);
   const out = ringOut;
@@ -983,7 +1005,7 @@ form.onsubmit = e => {
   const stops = planStops(p);
   $('#timeline').style.setProperty('--dur', `${.6 * (stops.length - 1) + .4}s`);
   $('#timeline').innerHTML = stops.map(([t, txt], i) =>
-    `<div class="stop" style="animation-delay:${i * .6}s"><img src="${MILESTONE_CAKE_GIF}" alt=""><time>${t}</time><p>${txt}</p></div>`).join('');
+    `<div class="stop" style="animation-delay:${i * .6}s"><i class="dot"><svg><use href="#i-${i === 0 ? 'pin' : i === stops.length - 1 ? 'food' : 'star'}"/></svg></i><time>${t}</time><p>${txt}</p></div>`).join('');
   show('#ticketView');
   const tl = $('#timeline'); tl.classList.remove('play'); void tl.offsetWidth; tl.classList.add('play');
 };
@@ -991,15 +1013,18 @@ $('#btnBack').onclick = () => show('#plan');
 
 // ===== 2. decide + share =====
 function share(p) {
-  const text = '🎂 효섭 생일 데이트 확정!\n\n' + planStops(p).map(([t, s]) => `${t} ${s}`).join('\n');
+  // 효섭 화면엔 '오수현한테 공유해줘' 안내, 수현이 받는 메시지는 코스 내용
+  const ask = '코스 오수현한테 공유해줘';
+  toast(ask);
+  const text = '🎂 효섭 생일 데이트 코스\n\n' + planStops(p).map(([t, s]) => `${t} ${s}`).join('\n');
   try {
     if (window.Kakao && KAKAO_JS_KEY) {
       if (!Kakao.isInitialized()) Kakao.init(KAKAO_JS_KEY);
       return Kakao.Share.sendDefault({ objectType: 'text', text, link: { mobileWebUrl: location.href, webUrl: location.href } });
     }
   } catch (err) { console.warn(err); }
-  if (navigator.share) return navigator.share({ text }).catch(() => {});
-  navigator.clipboard?.writeText(text).then(() => toast('복사됨! 카톡에 붙여넣기 ㄱㄱ'));
+  if (navigator.share) return navigator.share({ title: ask, text }).catch(() => {});
+  navigator.clipboard?.writeText(text).then(() => toast('복사됨! 오수현한테 카톡으로 보내줘'));
 }
 $('#btnDecide').onclick = () => {
   share(plan);
