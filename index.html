@@ -580,8 +580,13 @@ document.querySelectorAll('[data-img]').forEach(el => el.src = IMGS[el.dataset.i
 $('#rushImg').src = RUNNING_MEME_IMG;
 
 const KEY = 'hbd';
-const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
-const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
+// 로컬 스토리지 + 쿠키 둘 다 저장(카톡 인앱 브라우저에서 스토리지가 비는 경우 대비), 읽을 땐 있는 쪽 사용
+const cookie = () => decodeURIComponent((document.cookie.match(new RegExp('(?:^|; )' + KEY + '=([^;]*)')) || [])[1] || '');
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || cookie() || '{}'); } catch { return {}; } };
+const save = s => {
+  try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {}
+  document.cookie = `${KEY}=${encodeURIComponent(JSON.stringify(s))}; max-age=${60 * 60 * 24 * 30}; path=/; SameSite=Lax`;
+};
 let state = load();
 
 let toastTimer;
@@ -887,12 +892,13 @@ async function rush() {
   await move(1, 700); await wait(700);
   await move(1.5, 500);
   thump(1); boom(); confettiRain(10000); playSong();
+  $('#rushGo').textContent = state.confirmed ? '편지 보러 가기' : '데이트 코스 선택하기';
   $('#party').classList.remove('hidden');
 }
 $('#rushGo').onclick = () => {
   $('#rush').classList.add('hidden');
   $('#main').classList.remove('hidden');
-  show('#plan');
+  state.confirmed ? showLetter() : show('#plan');
 };
 
 // ===== 1. plan =====
@@ -1194,6 +1200,7 @@ $('#btnSafe').onclick = () => {
 $('#btnReset').onclick = () => {
   if (!confirm('헐 데이트 코스 다시 고를거야??')) return;
   try { localStorage.removeItem(KEY); } catch {}
+  document.cookie = `${KEY}=; max-age=0; path=/`;
   state = {};
   clearInterval(cd);
   form.reset();
