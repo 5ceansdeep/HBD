@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>효섭이 생일</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
 <style>
   :root {
-    --pink: #ff2bd6; --cyan: #00f0ff; --lime: #b6ff00; --yellow: #fff200;
-    --ink: #111; --paper: #fffbe6; --bg: #2a0055;
+    --bg: #fff; --card: #f5f5f7; --ink: #191919; --sub: #8b8b8b; --line: #ececec;
+    --accent: #ff4f7b; --accent-soft: #fff0f3;
     --ios-green: #34c759; --ios-red: #ff3b30;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    font-family: 'Do Hyeon', -apple-system, sans-serif;
-    background: #000; color: var(--ink);
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); letter-spacing: -.2px;
     overflow-x: hidden;
   }
   img { display: block; max-width: 100%; }
@@ -40,31 +39,40 @@
                 radial-gradient(50% 40% at 80% 30%, rgba(0,240,255,.14), transparent 70%);
     backdrop-filter: blur(30px);
   }
-  #call > * { position: relative; }
+  #call > *, #incoming > * { position: relative; }
   .call-sub { font-size: 17px; opacity: .7; }
   .call-name { font-size: 34px; font-weight: 500; margin: 6px 0 4px; letter-spacing: -.5px; text-align: center; }
   .avatar {
-    width: 112px; height: 112px; border-radius: 50%; margin-top: 28px;
+    width: 128px; height: 128px; border-radius: 50%; margin-top: 32px;
     display: grid; place-items: center; font-size: 44px; font-weight: 600;
-    background: linear-gradient(180deg, #a5a5ad, #6e6e76); color: #fff;
+    background: linear-gradient(180deg, #a5a5ad, #6e6e76) center/cover; color: #fff;
     box-shadow: 0 0 0 0 rgba(255,255,255,.35); animation: ring 1.6s infinite;
   }
+  .avatar.sm { width: 88px; height: 88px; font-size: 32px; margin: 0 0 16px; animation: none; }
   @keyframes ring { 70% { box-shadow: 0 0 0 22px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
-  .incoming-actions { margin-top: auto; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; }
-  .round-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; }
-  .round-btn i {
-    width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center;
-    font-style: normal; font-size: 32px;
-  }
-  .round-btn.red i { background: var(--ios-red); }
-  .round-btn.green i { background: var(--ios-green); animation: bounce 1s infinite; }
-  @keyframes bounce { 50% { transform: translateY(-6px); } }
-  .glass-row { display: flex; gap: 48px; margin-top: auto; margin-bottom: 36px; font-size: 13px; opacity: .85; }
-  .glass-row span { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ic { width: 26px; height: 26px; }
+  .glass-row { display: flex; gap: 56px; margin-top: auto; margin-bottom: 36px; font-size: 13px; }
+  .glass-row button { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .glass-row b {
-    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 400;
-    background: rgba(255,255,255,.14); backdrop-filter: blur(20px);
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(255,255,255,.18); backdrop-filter: blur(20px);
   }
+  .glass-row .red b { background: var(--ios-red); }
+  .slider {
+    position: relative; width: 100%; height: 76px; border-radius: 99px; padding: 6px;
+    background: rgba(255,255,255,.16); backdrop-filter: blur(20px); touch-action: none; user-select: none;
+  }
+  .slider span {
+    position: absolute; inset: 0; display: grid; place-items: center; padding-left: 56px; font-size: 20px;
+    background: linear-gradient(90deg, rgba(255,255,255,.35) 0 40%, #fff 50%, rgba(255,255,255,.35) 60% 100%) 0 0/300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 2.4s linear infinite;
+  }
+  @keyframes shine { from { background-position: 100% 0; } to { background-position: 0 0; } }
+  .knob {
+    position: relative; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center;
+    background: #fff; color: var(--ios-green); cursor: grab;
+  }
+  .knob.back { transition: transform .25s; }
   #ongoing { display: flex; flex-direction: column; align-items: center; width: 100%; flex: 1; }
   .timer { font-size: 17px; opacity: .8; font-variant-numeric: tabular-nums; }
   .subtitle {
@@ -75,26 +83,28 @@
   .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 28px; margin-top: auto; }
   .keypad span { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; }
   .keypad b {
-    width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; font-weight: 400;
+    width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center;
     background: rgba(255,255,255,.14); backdrop-filter: blur(20px);
   }
-  .end-btn { margin-top: 28px; width: 72px; height: 72px; border-radius: 50%; background: var(--ios-red); font-size: 30px; transform: rotate(135deg); }
+  .end-btn { margin-top: 28px; width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--ios-red); color: #fff; }
+  .down { transform: rotate(135deg); }
 
   /* reject popup */
   #reject {
     position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px;
-    background: rgba(0,0,0,.6);
+    background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
   }
   .reject-card {
-    width: 100%; max-width: 340px; aspect-ratio: 1; border: 4px solid #000; box-shadow: 8px 8px 0 var(--pink);
-    background: #000 center/cover no-repeat; position: relative; display: flex; flex-direction: column;
-    justify-content: flex-end; animation: shake .4s infinite;
+    width: 100%; max-width: 320px; border-radius: 22px; overflow: hidden; background: var(--card);
+    box-shadow: 0 20px 50px rgba(0,0,0,.35); animation: shake .35s 2;
   }
-  .reject-card p {
-    background: var(--yellow); color: #000; font-size: 26px; text-align: center; padding: 12px 8px; border-top: 4px solid #000;
+  .reject-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .reject-card p { font-size: 18px; font-weight: 700; text-align: center; padding: 18px 16px 6px; }
+  .reject-card button {
+    display: block; width: calc(100% - 32px); margin: 12px 16px 16px; padding: 14px; border-radius: 14px;
+    background: var(--ios-green); color: #fff; font-size: 16px; font-weight: 700;
   }
-  .reject-card button { background: var(--ios-green); color: #fff; font-size: 20px; padding: 14px; border-top: 4px solid #000; }
-  @keyframes shake { 25% { transform: translate(-3px, 2px) rotate(-1deg); } 75% { transform: translate(3px, -2px) rotate(1deg); } }
+  @keyframes shake { 25% { transform: translateX(-6px) rotate(-1deg); } 75% { transform: translateX(6px) rotate(1deg); } }
 
   /* ---------- rush overlay ---------- */
   #rush { position: fixed; inset: 0; z-index: 70; background: #000; display: grid; place-items: center; overflow: hidden; }
@@ -104,104 +114,77 @@
   @keyframes zoom { from { transform: scale(.1); } to { transform: scale(3.4); } }
   @keyframes flip { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } }
 
-  /* ---------- main (retro) ---------- */
-  #main {
-    min-height: 100dvh; padding: 20px 16px 48px;
-    background-color: var(--bg);
-    background-image:
-      linear-gradient(rgba(0,240,255,.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,240,255,.12) 1px, transparent 1px);
-    background-size: 22px 22px;
+  /* ---------- main ---------- */
+  #main { min-height: 100dvh; padding: calc(env(safe-area-inset-top) + 28px) 16px calc(env(safe-area-inset-bottom) + 40px); }
+  .title { font-size: 28px; font-weight: 800; line-height: 1.3; letter-spacing: -.8px; margin: 4px 4px 24px; }
+  .title small {
+    display: inline-block; margin-left: 8px; vertical-align: 4px; padding: 5px 11px; border-radius: 99px;
+    background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums;
   }
-  .title {
-    text-align: center; color: var(--yellow); font-size: 30px; line-height: 1.2;
-    text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 #000; margin: 8px 0 20px;
-  }
-  .title small { display: block; font-family: 'Press Start 2P', monospace; font-size: 22px; color: var(--lime); margin-top: 10px; animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: .3; } }
-  .win { background: var(--paper); border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 20px; }
-  .win-bar {
-    display: flex; justify-content: space-between; align-items: center; padding: 6px 10px;
-    background: linear-gradient(90deg, var(--pink), var(--cyan)); border-bottom: 3px solid #000;
-    font-family: 'Press Start 2P', monospace; font-size: 9px; color: #000;
-  }
-  .win-body { padding: 16px; position: relative; }
-  .field { margin-bottom: 18px; position: relative; }
-  .field h3 { font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+  .card { background: var(--card); border-radius: 22px; padding: 22px 20px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .field + .field { margin-top: 24px; }
+  .field h3 { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .field h3 img { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chips label input { position: absolute; opacity: 0; pointer-events: none; }
   .chips label span {
-    display: inline-block; padding: 8px 12px; border: 2px solid #000; background: #fff; font-size: 16px;
-    box-shadow: 3px 3px 0 #000; transition: transform .1s;
+    display: inline-block; padding: 10px 14px; border-radius: 99px; border: 1px solid var(--line);
+    background: #fff; font-size: 15px; font-weight: 500; transition: .15s;
   }
-  .chips label input:checked + span { background: var(--lime); transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
-  .meme { position: absolute; width: 64px; border: 2px solid #000; background: #fff; z-index: 1; pointer-events: none; }
-  .meme.a { right: -10px; top: -26px; transform: rotate(12deg); animation: wobble 2s infinite; }
-  .meme.b { right: -8px; top: -22px; transform: rotate(-10deg); animation: wobble 2.4s infinite reverse; }
-  @keyframes wobble { 50% { transform: rotate(-8deg) scale(1.08); } }
-  .pixel-btn {
-    display: block; width: 100%; padding: 14px; font-size: 22px; color: #000; background: var(--yellow);
-    border: 3px solid #000; box-shadow: 5px 5px 0 #000;
+  .chips label input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .chips label input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn {
+    display: block; width: 100%; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 700;
+    background: var(--accent); color: #fff; transition: transform .1s;
   }
-  .pixel-btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 #000; }
-  .pixel-btn.ghost { background: #fff; font-size: 18px; }
-  .row { display: flex; gap: 12px; }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: var(--card); color: var(--ink); }
+  .card .btn { margin-top: 28px; }
+  .row { display: flex; gap: 10px; }
+  .row .btn.ghost { flex: 0 0 96px; }
   .shake { animation: shake .3s 2; }
 
   /* ticket */
-  .ticket { background: var(--paper); border: 3px solid #000; box-shadow: 6px 6px 0 var(--pink); margin-bottom: 20px; }
-  .ticket-head { background: #000; color: var(--lime); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-  .ticket-head b { font-family: 'Press Start 2P', monospace; font-size: 12px; font-weight: 400; }
-  .ticket-head span { font-size: 18px; color: var(--yellow); }
-  .timeline { position: relative; padding: 22px 16px 8px 64px; }
-  .timeline::before {
-    content: ''; position: absolute; left: 35px; top: 34px; width: 4px; height: 0; background: var(--pink);
-  }
+  .ticket { background: var(--card); border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
+  .ticket-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: var(--accent); color: #fff; }
+  .ticket-head b { font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+  .ticket-head span { font-size: 15px; font-weight: 700; }
+  .timeline { position: relative; padding: 26px 20px 6px 68px; }
+  .timeline::before { content: ''; position: absolute; left: 37px; top: 42px; width: 2px; height: 0; background: var(--accent); }
   .timeline.play::before { animation: draw 1.8s ease-out forwards; }
-  @keyframes draw { to { height: calc(100% - 80px); } }
+  @keyframes draw { to { height: calc(100% - 94px); } }
   .stop { position: relative; margin-bottom: 26px; opacity: 0; }
   .timeline.play .stop { animation: pop .4s forwards; }
   .timeline.play .stop:nth-child(2) { animation-delay: .8s; }
   .timeline.play .stop:nth-child(3) { animation-delay: 1.6s; }
-  @keyframes pop { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
-  .stop img { position: absolute; left: -48px; top: -6px; width: 36px; height: 36px; border-radius: 50%; border: 2px solid #000; background: #fff; object-fit: cover; animation: spin 1.2s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .stop time { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--pink); }
-  .stop p { font-size: 20px; margin-top: 4px; }
-  .perf { border-top: 3px dashed #000; margin: 0 12px; position: relative; }
-  .perf::before, .perf::after {
-    content: ''; position: absolute; top: -14px; width: 24px; height: 24px; border-radius: 50%;
-    background: var(--bg); border: 3px solid #000;
-  }
-  .perf::before { left: -27px; } .perf::after { right: -27px; }
-  .no-capture { display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-size: 22px; }
-  .no-capture img { width: 72px; border: 2px solid #000; }
+  @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .stop img { position: absolute; left: -48px; top: 2px; width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--accent-soft); box-shadow: 0 0 0 4px var(--card); }
+  .stop time { font-size: 13px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stop p { font-size: 17px; font-weight: 600; margin-top: 2px; }
+  .perf { border-top: 2px dashed var(--line); margin: 0 18px; position: relative; }
+  .perf::before, .perf::after { content: ''; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
+  .perf::before { left: -30px; } .perf::after { right: -30px; }
+  .no-capture { display: flex; align-items: center; gap: 12px; padding: 16px 20px; font-size: 15px; font-weight: 600; color: var(--sub); }
+  .no-capture img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
 
   /* letter */
-  .banner { width: 100%; border: 3px solid #000; box-shadow: 6px 6px 0 #000; margin-bottom: 20px; }
-  .countdown {
-    font-family: 'Press Start 2P', monospace; font-size: 22px; text-align: center; color: var(--cyan);
-    background: #000; border: 3px solid var(--cyan); padding: 16px 8px; margin-bottom: 20px;
-    text-shadow: 0 0 8px var(--cyan);
-  }
-  .countdown small { display: block; font-family: 'Do Hyeon', sans-serif; font-size: 16px; color: #fff; text-shadow: none; margin-bottom: 10px; }
-  .safe { text-align: center; padding: 8px 0 4px; }
-  .safe button { font-size: 96px; line-height: 1; position: relative; animation: wobble 1.6s infinite; }
-  .safe .lock { position: absolute; right: -14px; bottom: -6px; font-size: 44px; }
+  .banner { width: 100%; border-radius: 22px; margin-bottom: 16px; }
+  .countdown { text-align: center; }
+  .countdown small { display: block; font-size: 14px; font-weight: 600; color: var(--sub); margin-bottom: 6px; }
+  .countdown span { font-size: 40px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+  .safe { text-align: center; padding: 8px 0; }
+  .safe button { font-size: 80px; line-height: 1; position: relative; }
+  .safe .lock { position: absolute; right: -12px; bottom: -4px; font-size: 36px; }
   .safe.open .lock { animation: unlock .8s forwards; }
   @keyframes unlock { 40% { transform: translateY(-20px) rotate(-30deg); } to { transform: translateY(-120px) rotate(-90deg); opacity: 0; } }
-  .safe p { font-size: 18px; margin-top: 12px; }
-  .letter {
-    background: #fff; border: 3px solid #000; padding: 22px 18px; font-size: 19px; line-height: 1.7;
-    white-space: pre-line; animation: rise .8s ease-out;
-    background-image: repeating-linear-gradient(transparent 0 31px, #ffd1f2 31px 32px);
-  }
-  @keyframes rise { from { transform: translateY(40px); opacity: 0; } }
+  .safe p { font-size: 15px; color: var(--sub); margin-top: 14px; line-height: 1.5; }
+  .letter { font-size: 17px; line-height: 1.8; white-space: pre-line; animation: rise .8s ease-out; }
+  @keyframes rise { from { transform: translateY(24px); opacity: 0; } }
 
   #toast {
     position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 28px); transform: translateX(-50%);
-    z-index: 90; background: #000; color: var(--lime); border: 2px solid var(--lime);
-    padding: 10px 16px; font-size: 17px; white-space: nowrap; transition: opacity .3s; opacity: 0; pointer-events: none;
+    z-index: 90; background: rgba(25,25,25,.92); color: #fff; border-radius: 99px;
+    padding: 12px 18px; font-size: 15px; font-weight: 600; white-space: nowrap; transition: opacity .3s; opacity: 0; pointer-events: none;
   }
   #toast.show { opacity: 1; }
 </style>
@@ -210,33 +193,52 @@
 <div class="app">
 
   <!-- 0. incoming / ongoing call -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.4 1.3 4.6 3.4 6.1L4.5 21l4.2-2.3c1 .2 2.1.3 3.3.3 5.5 0 10-3.6 10-8s-4.5-8-10-8z"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1-5 2.2M19 11a7 7 0 0 1-11.9 5M5 11a7 7 0 0 0 .5 2.6M12 18v3M3 3l18 18"/></symbol>
+    <symbol id="i-keypad" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" d="M5 5h.01M12 5h.01M19 5h.01M5 12h.01M12 12h.01M19 12h.01M5 19h.01M12 19h.01M19 19h.01"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM4 21a8 8 0 0 1 16 0"/></symbol>
+  </svg>
   <section id="call">
     <div id="incoming" style="display:contents">
       <p class="call-sub">휴대전화</p>
       <h1 class="call-name" data-name></h1>
       <div class="avatar" data-avatar></div>
-      <div class="glass-row"><span><b>⏰</b>알림</span><span><b>💬</b>메시지</span></div>
-      <div class="incoming-actions">
-        <button class="round-btn red" id="btnReject"><i>📵</i>거절</button>
-        <button class="round-btn green" id="btnAccept"><i>📞</i>수락</button>
+      <div class="glass-row">
+        <button class="red" id="btnReject"><b><svg class="ic down"><use href="#i-phone"/></svg></b>거절</button>
+        <button id="btnMsg"><b><svg class="ic"><use href="#i-msg"/></svg></b>메시지</button>
+      </div>
+      <div class="slider" id="slider">
+        <span>밀어서 응답하기</span>
+        <div class="knob" id="knob"><svg class="ic"><use href="#i-phone"/></svg></div>
       </div>
     </div>
     <div id="ongoing" class="hidden">
+      <div class="avatar sm" data-avatar></div>
       <h1 class="call-name" data-name></h1>
       <p class="timer" id="callTimer">00:00</p>
       <p class="subtitle" id="subtitle"></p>
       <div class="keypad">
-        <span><b>🔇</b>소리 끔</span><span><b>⌨️</b>키패드</span><span><b>🔊</b>스피커</span>
-        <span><b>➕</b>통화 추가</span><span><b>📹</b>FaceTime</span><span><b>👤</b>연락처</span>
+        <span><b><svg class="ic"><use href="#i-mute"/></svg></b>소리 끔</span>
+        <span><b><svg class="ic"><use href="#i-keypad"/></svg></b>키패드</span>
+        <span><b><svg class="ic"><use href="#i-speaker"/></svg></b>스피커</span>
+        <span><b><svg class="ic"><use href="#i-plus"/></svg></b>통화 추가</span>
+        <span><b><svg class="ic"><use href="#i-video"/></svg></b>FaceTime</span>
+        <span><b><svg class="ic"><use href="#i-person"/></svg></b>연락처</span>
       </div>
-      <button class="end-btn" id="btnEnd" aria-label="통화 종료">📞</button>
+      <button class="end-btn" id="btnEnd" aria-label="통화 종료"><svg class="ic down"><use href="#i-phone"/></svg></button>
     </div>
   </section>
 
   <div id="reject" class="hidden">
     <div class="reject-card" id="rejectCard">
+      <img data-img="FAIL_WARNING_IMG" alt="">
       <p>거절 불가! 무조건 받아야 함 🤪</p>
-      <button id="btnForce">📞 네… 받을게요</button>
+      <button id="btnForce">네… 받을게요</button>
     </div>
   </div>
 
@@ -251,16 +253,13 @@
 
     <!-- 1. plan -->
     <section id="plan" class="hidden">
-      <div class="win">
-        <div class="win-bar"><span>DATE_COURSE.EXE</span><span>_ □ ×</span></div>
-        <form class="win-body" id="planForm">
-          <div class="field"><h3>⏰ 몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
-          <div class="field"><img class="meme a" data-img="MEME_CARD_1_IMG" alt=""><h3>📍 어디서 만나?</h3><div class="chips" data-chips="place"></div></div>
-          <div class="field"><h3>🎡 메인 코스</h3><div class="chips" data-chips="course"></div></div>
-          <div class="field"><img class="meme b" data-img="MEME_CARD_2_IMG" alt=""><h3>🍽 저녁 메뉴</h3><div class="chips" data-chips="dinner"></div></div>
-          <button class="pixel-btn" type="submit">🎫 티켓 발권하기</button>
-        </form>
-      </div>
+      <form class="card" id="planForm">
+        <div class="field"><h3>⏰ 몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
+        <div class="field"><h3><img data-img="RUNNING_MEME_IMG" alt="">어디서 만나?</h3><div class="chips" data-chips="place"></div></div>
+        <div class="field"><h3><img data-img="MEME_CARD_1_IMG" alt="">메인 코스</h3><div class="chips" data-chips="course"></div></div>
+        <div class="field"><h3><img data-img="MEME_CARD_2_IMG" alt="">저녁 메뉴</h3><div class="chips" data-chips="dinner"></div></div>
+        <button class="btn" type="submit">티켓 발권하기</button>
+      </form>
     </section>
 
     <!-- 2. ticket -->
@@ -276,26 +275,23 @@
         <div class="no-capture"><img data-img="NERD_DOG_IMG" alt=""><span>캡처 불가 🤪</span></div>
       </div>
       <div class="row">
-        <button class="pixel-btn ghost" id="btnBack">↩ 다시</button>
-        <button class="pixel-btn" id="btnDecide">✅ 결정하기</button>
+        <button class="btn ghost" id="btnBack">다시</button>
+        <button class="btn" id="btnDecide">결정하기</button>
       </div>
     </section>
 
     <!-- 3. letter -->
     <section id="letterView" class="hidden">
       <img class="banner" data-img="COMING_SOON_IMG" alt="">
-      <div class="countdown" id="countdown"><small>19:00 편지 오픈까지</small><span id="cdText">--:--:--</span></div>
-      <div class="win">
-        <div class="win-bar"><span>LETTER.TXT</span><span>_ □ ×</span></div>
-        <div class="win-body">
-          <div class="safe" id="safe">
-            <button id="btnSafe">💌<span class="lock">🔒</span></button>
-            <p>19:00에 오픈됩니다!<br>(1분당 1번만 클릭 가능)</p>
-          </div>
-          <div class="letter hidden" id="letter"></div>
+      <div class="card countdown" id="countdown"><small>19:00 편지 오픈까지</small><span id="cdText">--:--:--</span></div>
+      <div class="card">
+        <div class="safe" id="safe">
+          <button id="btnSafe">💌<span class="lock">🔒</span></button>
+          <p>19:00에 오픈됩니다!<br>(1분당 1번만 클릭 가능)</p>
         </div>
+        <div class="letter hidden" id="letter"></div>
       </div>
-      <button class="pixel-btn ghost" id="btnReset">🔄 데이트 코스 다시 결정하기</button>
+      <button class="btn ghost" id="btnReset">데이트 코스 다시 결정하기</button>
     </section>
   </main>
 
@@ -313,7 +309,7 @@ const NERD_DOG_IMG = 'https://placehold.co/120x120/fffbe6/000?text=NERD';
 const COMING_SOON_IMG = 'https://placehold.co/800x300/000/b6ff00?text=COMING+SOON';
 
 // ===== 설정 =====
-const BIRTHDAY = '2026-09-26';   // 생일 (편지는 이 날 19:00 오픈)
+const BIRTHDAY = '2026-09-27';   // 생일 (편지는 이 날 19:00 오픈)
 const KAKAO_JS_KEY = '';         // Kakao Developers JavaScript 키. 비어 있으면 기본 공유/복사로 대체
 const LETTER = `효섭아 생일 축하해 🎂
 
@@ -323,11 +319,11 @@ const LETTER = `효섭아 생일 축하해 🎂
 - 너의 여자친구가`;
 
 const CALLERS = [
-  { name: '일론 머스크', avatar: 'EM', pitch: 0.8, rate: 0.95,
+  { name: '일론 머스크', avatar: 'EM', photo: '', pitch: 0.8, rate: 0.95,
     line: '안녕 효섭. 나의 화성 식민지 개척 프로젝트보다 너의 생일이 더 중요하다. 선물로 테슬라 주식 0.00001주를 송금했다. 계좌를 확인해라.' },
-  { name: '장원영', avatar: '원영', pitch: 1.5, rate: 1.1,
+  { name: '장원영', avatar: '원영', photo: '', pitch: 1.5, rate: 1.1,
     line: '오늘 효섭이 생일이라구? 완전 럭키효섭이잖아! 1년에 딱 하루 있는 날을 나랑 전화하면서 시작하다니, 너 진짜 완전 행운아다!' },
-  { name: '페이커 (이상혁)', avatar: 'T1', pitch: 1.0, rate: 1.0,
+  { name: '페이커 (이상혁)', avatar: 'T1', photo: '', pitch: 1.0, rate: 1.0,
     line: '효섭 선수, 오늘 생일 딜교 완벽했습니다. 오늘 저녁은 오마카세 동선으로 깔끔하게 미는 걸 추천합니다. 생일 축하드립니다.' },
 ];
 
@@ -343,7 +339,6 @@ const $ = s => document.querySelector(s);
 const IMGS = { RUNNING_MEME_IMG, MILESTONE_CAKE_GIF, MEME_CARD_1_IMG, MEME_CARD_2_IMG, FAIL_WARNING_IMG, NERD_DOG_IMG, COMING_SOON_IMG };
 document.querySelectorAll('[data-img]').forEach(el => el.src = IMGS[el.dataset.img]);
 $('#rushImg').src = RUNNING_MEME_IMG;
-$('#rejectCard').style.backgroundImage = `url("${FAIL_WARNING_IMG}")`;
 
 const KEY = 'hbd';
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
@@ -376,7 +371,12 @@ const openAt = new Date(`${BIRTHDAY}T19:00:00`);
 // ===== 0. call =====
 const caller = CALLERS[Math.floor(Math.random() * CALLERS.length)];
 document.querySelectorAll('[data-name]').forEach(el => el.textContent = caller.name);
-$('[data-avatar]').textContent = caller.avatar;
+// photo 있으면 프로필 사진 + 배경 포스터, 없으면 이니셜
+document.querySelectorAll('[data-avatar]').forEach(el => {
+  if (caller.photo) el.style.backgroundImage = `url("${caller.photo}")`;
+  else el.textContent = caller.avatar;
+});
+if (caller.photo) $('#call').style.background = `#000 url("${caller.photo}") center/cover`;
 
 let accepted = false, ended = false, tick, fallback;
 function accept() {
@@ -414,10 +414,28 @@ function endCall() {
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   rush();
 }
-$('#btnAccept').onclick = accept;
 $('#btnEnd').onclick = endCall;
 $('#btnForce').onclick = accept;
-$('#btnReject').onclick = () => $('#reject').classList.remove('hidden');
+$('#btnReject').onclick = $('#btnMsg').onclick = () => $('#reject').classList.remove('hidden');
+
+// 밀어서 응답하기: 끝까지 끌면 수락, 아니면 제자리로
+{
+  const knob = $('#knob'), slider = $('#slider');
+  let x0 = null, dx = 0;
+  const max = () => slider.clientWidth - knob.offsetWidth - 12;
+  knob.onpointerdown = e => { x0 = e.clientX; knob.classList.remove('back'); knob.setPointerCapture(e.pointerId); };
+  knob.onpointermove = e => {
+    if (x0 === null) return;
+    dx = Math.min(Math.max(e.clientX - x0, 0), max());
+    knob.style.transform = `translateX(${dx}px)`;
+  };
+  knob.onpointerup = knob.onpointercancel = () => {
+    if (x0 === null) return;
+    x0 = null;
+    if (dx > max() * .85) return accept();
+    knob.classList.add('back'); knob.style.transform = ''; dx = 0;
+  };
+}
 
 // ===== 0-1. rush =====
 function rush() {
