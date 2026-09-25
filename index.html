@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>효섭이 생일</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
 <style>
@@ -89,6 +90,19 @@
   .end-btn { margin-top: 28px; width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--ios-red); color: #fff; }
   .down { transform: rotate(135deg); }
 
+  /* 잠금화면: 첫 터치로 소리 권한을 얻은 뒤 전화가 울리게 */
+  #lock {
+    position: fixed; inset: 0; z-index: 55; color: #fff; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    padding: calc(env(safe-area-inset-top) + 72px) 24px calc(env(safe-area-inset-bottom) + 56px);
+    background: radial-gradient(120% 80% at 50% 0%, #4a4e69 0%, #22223b 45%, #0b0b14 100%);
+    font-family: -apple-system, 'SF Pro Display', 'Apple SD Gothic Neo', sans-serif;
+  }
+  .lock-date { font-size: 20px; font-weight: 500; opacity: .85; }
+  .lock-time { font-size: 88px; font-weight: 700; letter-spacing: -2px; line-height: 1; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .lock-hint { margin-top: auto; font-size: 15px; opacity: .7; animation: soft-blink 1.6s ease-in-out infinite; }
+  @keyframes soft-blink { 50% { opacity: .25; } }
+
   /* reject popup */
   #reject {
     position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px;
@@ -98,7 +112,7 @@
     width: 100%; max-width: 320px; border-radius: 22px; overflow: hidden; background: var(--card);
     box-shadow: 0 20px 50px rgba(0,0,0,.35); animation: shake .35s 2;
   }
-  .reject-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .reject-card img { width: 100%; aspect-ratio: 4 / 5; max-height: 55dvh; object-fit: cover; object-position: 50% 25%; }
   .reject-card p { font-size: 18px; font-weight: 700; text-align: center; padding: 18px 16px 6px; }
   .reject-card button {
     display: block; width: calc(100% - 32px); margin: 12px 16px 16px; padding: 14px; border-radius: 14px;
@@ -107,12 +121,34 @@
   @keyframes shake { 25% { transform: translateX(-6px) rotate(-1deg); } 75% { transform: translateX(6px) rotate(1deg); } }
 
   /* ---------- rush overlay ---------- */
-  #rush { position: fixed; inset: 0; z-index: 70; background: #000; display: grid; place-items: center; overflow: hidden; }
-  .rush-zoom { animation: zoom 1.5s cubic-bezier(.55, 0, .9, .4) forwards; }
-  .rush-flip { animation: flip .2s steps(1) infinite; }
-  .rush-flip img { width: 160px; }
-  @keyframes zoom { from { transform: scale(.1); } to { transform: scale(3.4); } }
-  @keyframes flip { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } }
+  #rush { position: fixed; inset: 0; z-index: 70; background: var(--bg); display: grid; place-items: center; padding-bottom: 60px; overflow: hidden; }
+  .rush-zoom { transform: scale(.1); }
+  .rush-flip.m { transform: scaleX(-1); }
+  .rush-flip img { width: 180px; }
+  .party { position: absolute; inset: 0; max-width: 430px; margin: 0 auto; pointer-events: none; }
+  .party img { position: absolute; }
+  .p-text {
+    position: absolute; top: calc(env(safe-area-inset-top) + 40px); left: 0; right: 0; text-align: center;
+    font-size: 44px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px;
+    animation: hbd-in .6s cubic-bezier(.3, 1.6, .5, 1) backwards;
+  }
+  .p-text em { display: block; font-style: normal; color: var(--accent); }
+  .p-cake { top: 56%; left: 50%; translate: -50% 0; width: min(56%, 230px); animation: hbd-in .5s .15s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+  .p-throw { top: 34%; left: -6px; width: min(40%, 168px); transform-origin: 20% 100%; animation: p-in-left .5s .3s backwards, p-nadae 2.4s .8s infinite; }
+  @keyframes hbd-in { from { transform: scale(0) rotate(-25deg); opacity: 0; } }
+  @keyframes p-in-left { from { transform: translateX(-120%); } }
+  /* 폴짝폴짝 나대다가 가운데로 케이크 던지기 */
+  @keyframes p-nadae {
+    0%, 20%, 40%, 78%, 100% { transform: none; }
+    10% { transform: translateY(-20px) rotate(-7deg); }
+    30% { transform: translateY(-20px) rotate(7deg); }
+    52% { transform: translate(-8px, 4px) rotate(-10deg); }
+    62% { transform: translate(80px, -24px) rotate(16deg) scale(1.3); }
+  }
+  .btn.rush-go {
+    position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 32px);
+    width: min(calc(100% - 48px), 382px); margin: 0 auto; pointer-events: auto; animation: hbd-in .5s 1.2s backwards;
+  }
 
   /* ---------- main ---------- */
   #main { min-height: 100dvh; padding: calc(env(safe-area-inset-top) + 28px) 16px calc(env(safe-area-inset-bottom) + 40px); }
@@ -122,9 +158,23 @@
     background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums;
   }
   .card { background: var(--card); border-radius: 22px; padding: 22px 20px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-  .field + .field { margin-top: 24px; }
-  .field h3 { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
-  .field h3 img { width: 28px; height: 28px; border-radius: 8px; object-fit: cover; }
+  .wiz-head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .wiz-back { width: 32px; height: 32px; margin-left: -6px; display: grid; place-items: center; border-radius: 50%; }
+  .wiz-back:disabled { opacity: .2; }
+  .wiz-back .ic { width: 22px; height: 22px; }
+  .wiz-dots { flex: 1; display: flex; gap: 6px; }
+  .wiz-dots i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); transition: background .3s; }
+  .wiz-dots i.on { background: var(--accent); }
+  #wizCount { font-size: 13px; font-weight: 700; color: var(--sub); font-variant-numeric: tabular-nums; }
+  .wiz-vp { overflow: hidden; margin: 0 -20px; padding: 0 20px 4px; }
+  .slide.next { animation: from-right .35s cubic-bezier(.2, .8, .2, 1); }
+  .slide.prev { animation: from-left .35s cubic-bezier(.2, .8, .2, 1); }
+  @keyframes from-right { from { transform: translateX(60%); opacity: 0; } }
+  @keyframes from-left { from { transform: translateX(-60%); opacity: 0; } }
+  .field h3 { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 18px; }
+  .field h3 img, .tile { width: 32px; height: 32px; border-radius: 9px; object-fit: cover; flex: none; }
+  .tile { display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+  .tile svg { width: 18px; height: 18px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chips label input { position: absolute; opacity: 0; pointer-events: none; }
   .chips label span {
@@ -133,11 +183,23 @@
   }
   .chips label input:checked + span { background: var(--ink); border-color: var(--ink); color: #fff; }
   .chips label input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .chips .play {
-    display: inline-grid; place-items: center; width: 22px; height: 22px; margin: -2px -6px -2px 6px; vertical-align: middle;
+  .field h3 small { font-size: 13px; font-weight: 500; color: var(--sub); }
+  .opts { display: grid; gap: 8px; }
+  .opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt > div {
+    display: flex; align-items: center; gap: 12px; padding: 14px 14px 14px 16px; border-radius: 16px;
+    background: #fff; border: 1.5px solid var(--line); transition: .15s;
+  }
+  .opt > div > span { flex: 1; min-width: 0; }
+  .opt b { display: block; font-size: 15px; font-weight: 700; }
+  .opt small { display: block; font-size: 13px; color: var(--sub); margin-top: 2px; line-height: 1.4; }
+  .opt input:checked + div { border-color: var(--accent); background: var(--accent-soft); }
+  .opt input:focus-visible + div { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .reel-btn {
+    flex: none; display: grid; place-items: center; width: 34px; height: 34px;
     border-radius: 50%; background: var(--accent); color: #fff;
   }
-  .chips .play svg { width: 10px; height: 10px; margin-left: 1px; }
+  .reel-btn svg { width: 13px; height: 13px; margin-left: 2px; }
   #reel { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; background: rgba(0,0,0,.5); }
   .sheet {
     width: 100%; max-width: 430px; margin: 0 auto; background: #fff; border-radius: 22px 22px 0 0;
@@ -163,7 +225,8 @@
   .ticket { background: var(--card); border-radius: 22px; overflow: hidden; margin-bottom: 16px; }
   .ticket-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: var(--accent); color: #fff; }
   .ticket-head b { font-size: 12px; font-weight: 700; letter-spacing: 2px; }
-  .ticket-head span { font-size: 15px; font-weight: 700; }
+  .ticket-head span { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; }
+  .ticket-head span svg { width: 16px; height: 16px; }
   .timeline { position: relative; padding: 26px 20px 6px 68px; }
   .timeline::before { content: ''; position: absolute; left: 37px; top: 42px; width: 2px; height: 0; background: var(--accent); }
   .timeline.play::before { animation: draw 1.8s ease-out forwards; }
@@ -183,19 +246,55 @@
   .no-capture img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
 
   /* letter */
-  .banner { width: 100%; border-radius: 22px; margin-bottom: 16px; }
   .countdown { text-align: center; }
   .countdown small { display: block; font-size: 14px; font-weight: 600; color: var(--sub); margin-bottom: 6px; }
   .countdown span { font-size: 40px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
-  .safe { text-align: center; padding: 8px 0; }
-  .safe button { font-size: 80px; line-height: 1; position: relative; }
-  .safe .lock { position: absolute; right: -12px; bottom: -4px; font-size: 36px; }
-  .safe.open .lock { animation: unlock .8s forwards; }
-  @keyframes unlock { 40% { transform: translateY(-20px) rotate(-30deg); } to { transform: translateY(-120px) rotate(-90deg); opacity: 0; } }
-  .safe p { font-size: 15px; color: var(--sub); margin-top: 14px; line-height: 1.5; }
-  .letter { font-size: 17px; line-height: 1.8; white-space: pre-line; animation: rise .8s ease-out; }
-  @keyframes rise { from { transform: translateY(24px); opacity: 0; } }
-
+  .safe { text-align: center; padding: 28px 20px 24px; }
+  /* 닫힌 봉투: 봉투 이미지의 아래쪽 몸통(55%)만 보여주고 CSS 덮개를 씌움 */
+  .safe .env {
+    position: relative; display: block; margin: 0 auto; width: min(76%, 260px); aspect-ratio: 589 / 396;
+    background: url(envelope.webp) center bottom / 100% auto no-repeat; perspective: 700px;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.15));
+  }
+  .safe .flap {
+    position: absolute; left: 2%; right: 2%; top: 1%; height: 60%; z-index: 1;
+    transform-origin: top; transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,.35));
+  }
+  .safe .flap i { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 50% 100%); background: linear-gradient(#6f5145, #4a3329); }
+  .safe .lock {
+    position: absolute; left: 50%; top: 61%; translate: -50% -50%; z-index: 2; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--ink); color: #fff; box-shadow: 0 0 0 4px var(--card); transition: .4s;
+  }
+  .safe .lock svg { width: 20px; height: 20px; }
+  .safe p { font-size: 15px; color: var(--sub); margin-top: 18px; line-height: 1.5; }
+  .safe .btn { margin-top: 18px; animation: hbd-in .5s cubic-bezier(.3, 1.6, .5, 1); }
+  /* 19시 지나면: 봉인(자물쇠) 풀리고 봉투가 둥실 */
+  .safe.ready .lock { transform: scale(0) rotate(-45deg); opacity: 0; }
+  .safe.ready .env { animation: env-bob 1.6s ease-in-out infinite; }
+  @keyframes env-bob { 50% { transform: translateY(-8px) rotate(-2deg); } }
+  /* 열기: 덮개가 젖혀지고(안의 편지지가 보임) → 봉투가 가라앉으며 사라짐 */
+  .safe.opening .flap { transform: rotateX(180deg); }
+  .safe.opening .env { animation: env-open .5s .7s forwards; }
+  .safe.opening p, .safe.opening .btn { transition: opacity .3s; opacity: 0; }
+  @keyframes env-open { to { transform: translateY(40px) scale(.6); opacity: 0; } }
+  /* 편지지: 노트 이미지의 줄 간격(폭의 9.87%)에 글줄을 맞춤 */
+  .letter-wrap { container-type: inline-size; margin-bottom: 16px; perspective: 1200px; }
+  .letter {
+    aspect-ratio: 9 / 16; padding: 63.5% 7% 12% 9%; border-radius: 6px;
+    background: #f3f1eb url(letter_paper.webp) top / 100% auto no-repeat; box-shadow: 0 12px 30px rgba(0,0,0,.12);
+    font-family: 'Nanum Pen Script', cursive; color: #2b3a67; white-space: pre-wrap; word-break: keep-all;
+    font-size: 30px; line-height: 35px; font-size: 8.6cqw; line-height: 9.87cqw;
+    transform-origin: top center; animation: unfold .9s cubic-bezier(.2, .8, .2, 1) backwards;
+  }
+  .letter span { display: block; min-height: 9.87cqw; animation: ink .5s backwards; }
+  @keyframes unfold { from { transform: rotateX(-80deg) translateY(-30px); opacity: 0; } 40% { opacity: 1; } }
+  @keyframes ink { from { opacity: 0; transform: translateY(6px); } }
+  .dev-btn {
+    position: fixed; right: 12px; top: calc(env(safe-area-inset-top) + 12px); z-index: 200;
+    padding: 8px 12px; border-radius: 99px; background: #ffd400; color: #000; font-size: 13px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
   #toast {
     position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 28px); transform: translateX(-50%);
     z-index: 90; background: rgba(25,25,25,.92); color: #fff; border-radius: 99px;
@@ -216,9 +315,19 @@
     <symbol id="i-speaker" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11 5 6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-video" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21zM14.5 9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 7v5l3 2"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10V7a5 5 0 0 1 10 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1h1zm2 0h6V7a3 3 0 0 0-6 0v3z"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M6 3.5v17a1 1 0 0 0 1.5.9l14-8.5a1 1 0 0 0 0-1.8l-14-8.5A1 1 0 0 0 6 3.5z"/></symbol>
     <symbol id="i-person" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM4 21a8 8 0 0 1 16 0"/></symbol>
   </svg>
+  <section id="lock">
+    <p class="lock-date" id="lockDate"></p>
+    <p class="lock-time" id="lockTime"></p>
+    <p class="lock-hint">화면을 터치하세요</p>
+  </section>
   <section id="call">
     <div id="incoming" style="display:contents">
       <p class="call-sub">휴대전화</p>
@@ -253,7 +362,7 @@
   <div id="reject" class="hidden">
     <div class="reject-card" id="rejectCard">
       <img data-img="FAIL_WARNING_IMG" alt="">
-      <p>거절 불가! 무조건 받아야 함 🤪</p>
+      <p>거절 불가! 무조건 받아야 함</p>
       <button id="btnForce">네… 받을게요</button>
     </div>
   </div>
@@ -261,6 +370,12 @@
   <!-- 0-1. rush overlay -->
   <div id="rush" class="hidden">
     <div class="rush-zoom"><div class="rush-flip"><img id="rushImg" alt=""></div></div>
+    <div class="party hidden" id="party">
+      <p class="p-text">HAPPY<em>BIRTHDAY</em></p>
+      <img class="p-throw" data-img="PARTY_THROW_IMG" alt="">
+      <img class="p-cake" data-img="PARTY_CAKE_IMG" alt="">
+      <button class="btn rush-go" id="rushGo">데이트 코스 선택하기</button>
+    </div>
   </div>
 
   <!-- main -->
@@ -270,25 +385,31 @@
     <!-- 1. plan -->
     <section id="plan" class="hidden">
       <form class="card" id="planForm">
-        <div class="field"><h3>⏰ 몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
-        <div class="field"><h3><img data-img="RUNNING_MEME_IMG" alt="">어디서 만나?</h3><div class="chips" data-chips="place"></div></div>
-        <div class="field"><h3><img data-img="MEME_CARD_1_IMG" alt="">메인 코스</h3><div class="chips" data-chips="course"></div></div>
-        <div class="field"><h3><img data-img="MEME_CARD_2_IMG" alt="">저녁 메뉴</h3><div class="chips" data-chips="dinner"></div></div>
-        <button class="btn" type="submit">티켓 발권하기</button>
+        <div class="wiz-head">
+          <button type="button" class="wiz-back" id="wizBack" aria-label="이전" disabled><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="wiz-dots"><i class="on"></i><i></i><i></i><i></i></div>
+          <span id="wizCount">1/4</span>
+        </div>
+        <div class="wiz-vp">
+          <div class="field slide"><h3><b class="tile"><svg><use href="#i-clock"/></svg></b>몇 시에 볼까?</h3><div class="chips" data-chips="time"></div></div>
+          <div class="field slide hidden"><h3><b class="tile"><svg><use href="#i-pin"/></svg></b>어디서 놀까?</h3><div class="chips" data-chips="place"></div></div>
+          <div class="field slide hidden"><h3><img data-img="MEME_CARD_1_IMG" alt="">뭐 할까? <small id="areaSub"></small></h3><div class="opts" data-opts="course"></div></div>
+          <div class="field slide hidden"><h3><img data-img="MEME_CARD_2_IMG" alt="">뭐 먹을까?</h3><div class="opts" data-opts="dinner"></div><button class="btn" type="submit">티켓 발권하기</button></div>
+        </div>
       </form>
     </section>
 
     <!-- 2. ticket -->
     <section id="ticketView" class="hidden">
       <div class="ticket">
-        <div class="ticket-head"><b>BOARDING PASS</b><span>효섭 ✈ 행복</span></div>
+        <div class="ticket-head"><b>BOARDING PASS</b><span>효섭 <svg><use href="#i-plane"/></svg> 행복</span></div>
         <div class="timeline" id="timeline">
           <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="0"></time><p data-p="0"></p></div>
           <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="1"></time><p data-p="1"></p></div>
           <div class="stop"><img data-img="MILESTONE_CAKE_GIF" alt=""><time data-t="2"></time><p data-p="2"></p></div>
         </div>
         <div class="perf"></div>
-        <div class="no-capture"><img data-img="NERD_DOG_IMG" alt=""><span>캡처 불가 🤪</span></div>
+        <div class="no-capture"><img data-img="NERD_DOG_IMG" alt=""><span>환불·양도·취소 불가 (효섭 전용)</span></div>
       </div>
       <div class="row">
         <button class="btn ghost" id="btnBack">다시</button>
@@ -298,15 +419,13 @@
 
     <!-- 3. letter -->
     <section id="letterView" class="hidden">
-      <img class="banner" data-img="COMING_SOON_IMG" alt="">
-      <div class="card countdown" id="countdown"><small>19:00 편지 오픈까지</small><span id="cdText">--:--:--</span></div>
-      <div class="card">
-        <div class="safe" id="safe">
-          <button id="btnSafe">💌<span class="lock">🔒</span></button>
-          <p>19:00에 오픈됩니다!<br>(1분당 1번만 클릭 가능)</p>
-        </div>
-        <div class="letter hidden" id="letter"></div>
+      <div class="card countdown" id="countdown"><small id="cdLabel">19:00 편지 오픈까지</small><span id="cdText">--:--:--</span></div>
+      <div class="card safe" id="safe">
+        <button class="env" id="btnSafe" aria-label="편지"><span class="flap"><i></i></span><span class="lock"><svg><use href="#i-lock"/></svg></span></button>
+        <p id="safeMsg">19:00에 오픈됩니다!</p>
+        <button class="btn hidden" id="btnOpen">편지 열어보기</button>
       </div>
+      <div class="letter-wrap hidden" id="letterWrap"><div class="letter" id="letter"></div></div>
       <button class="btn ghost" id="btnReset">데이트 코스 다시 결정하기</button>
     </section>
   </main>
@@ -315,27 +434,35 @@
     <div class="sheet">
       <div class="sheet-bar"><span id="reelTitle"></span><a id="reelLink" target="_blank" rel="noopener">인스타그램에서 열기</a></div>
       <iframe id="reelFrame" allowfullscreen></iframe>
-      <button class="btn ghost" id="reelClose">닫기</button>
+      <div class="row">
+        <button class="btn ghost" id="reelClose">닫기</button>
+        <button class="btn" id="reelPick">이걸로 할래</button>
+      </div>
     </div>
   </div>
 
   <div id="toast"></div>
+
+  <!-- 개발용: 편지 미리보기 버튼. 배포(push) 전에 아래 줄을 주석처리하세요 -->
+  <button class="dev-btn" id="devLetter">편지 미리보기</button>
 </div>
 
 <script>
 // ===== 이미지 (교체용) =====
-const RUNNING_MEME_IMG = 'https://placehold.co/300x300/ff2bd6/000?text=RUN';
-const MILESTONE_CAKE_GIF = 'https://placehold.co/80x80/fff200/000?text=🎂';
+const RUNNING_MEME_IMG = 'party_dog.png';
+const MILESTONE_CAKE_GIF = 'https://placehold.co/80x80/fff200/000?text=CAKE';
 const MEME_CARD_1_IMG = 'https://placehold.co/120x120/b6ff00/000?text=MEME1';
 const MEME_CARD_2_IMG = 'https://placehold.co/120x120/00f0ff/000?text=MEME2';
-const FAIL_WARNING_IMG = 'https://placehold.co/400x400/ff3b30/fff?text=FAIL';
+const FAIL_WARNING_IMG = 'fail_lion.webp';
 const NERD_DOG_IMG = 'https://placehold.co/120x120/fffbe6/000?text=NERD';
-const COMING_SOON_IMG = 'https://placehold.co/800x300/000/b6ff00?text=COMING+SOON';
+const PARTY_CAKE_IMG = 'cake.webp';         // 파티 화면: 강아지 앞 케이크
+const PARTY_THROW_IMG = 'cake_throw.webp';  // 파티 화면: 옆에서 나대며 케이크 던지기
 
 // ===== 설정 =====
 const BIRTHDAY = '2026-09-27';   // 생일 (편지는 이 날 19:00 오픈)
+const RINGTONE_SRC = '';         // 벨소리 파일(예: 'ringtone.mp3'). 비워두면 합성 마림바 벨소리
 const KAKAO_JS_KEY = '';         // Kakao Developers JavaScript 키. 비어 있으면 기본 공유/복사로 대체
-const LETTER = `효섭아 생일 축하해 🎂
+const LETTER = `효섭아 생일 축하해
 
 여기에 진심 어린 편지를 써 줘.
 줄바꿈도 그대로 보여.
@@ -343,38 +470,76 @@ const LETTER = `효섭아 생일 축하해 🎂
 - 너의 여자친구가`;
 
 const CALLERS = [
-  { name: '일론 머스크', avatar: 'EM', photo: '', pitch: 0.8, rate: 0.95,
+  { name: '일론 머스크', avatar: 'EM', photo: 'caller_elon.webp', pitch: 0.8, rate: 0.95,
     line: '안녕 효섭. 나의 화성 식민지 개척 프로젝트보다 너의 생일이 더 중요하다. 선물로 테슬라 주식 0.00001주를 송금했다. 계좌를 확인해라.' },
-  { name: '장원영', avatar: '원영', photo: '', pitch: 1.5, rate: 1.1,
-    line: '오늘 효섭이 생일이라구? 완전 럭키효섭이잖아! 1년에 딱 하루 있는 날을 나랑 전화하면서 시작하다니, 너 진짜 완전 행운아다!' },
-  { name: '페이커 (이상혁)', avatar: 'T1', photo: '', pitch: 1.0, rate: 1.0,
-    line: '효섭 선수, 오늘 생일 딜교 완벽했습니다. 오늘 저녁은 오마카세 동선으로 깔끔하게 미는 걸 추천합니다. 생일 축하드립니다.' },
+  { name: '장원영', avatar: '원영', photo: 'caller_wonyoung.webp', pitch: 1.5, rate: 1.1,
+    line: '완전 럭키효섭이잖아! 내가 너의 생일을 축하하게 되다니, 너 진짜 완전 행운아다!' },
+  { name: '페이커 (이상혁)', avatar: 'T1', photo: 'caller_faker.webp', pitch: 1.0, rate: 1.0,
+    line: '효섭 선수, 오늘 생일 딜교 완벽했습니다. 오늘 저녁은 하이디라오 동선으로 깔끔하게 미는 걸 추천합니다. 생일 축하드립니다.' },
 ];
 
-const OPTIONS = {
-  time: ['14:00', '15:00', '16:00'],
-  place: ['강남역', '성수역', '홍대입구역', '잠실 롯데월드몰'],
-  course: ['방탈출 카페', '보드게임 카페', '한강 피크닉', '전시회 관람', '놀이공원'],
-  dinner: ['오마카세', '삼겹살', '파스타', '마라탕', '한우 코스'],
-};
+const TIMES = ['14:00', '15:00', '16:00'];
 
-// 선택지별 인스타 릴스 링크 (인스타 앱 '공유 → 링크 복사' 한 주소 그대로). 비워두면 재생 버튼 안 뜸
-const REELS = {
-  '방탈출 카페': '',
-  '보드게임 카페': '',
-  '한강 피크닉': '',
-  '전시회 관람': '',
-  '놀이공원': '',
-  '오마카세': '',
-  '삼겹살': '',
-  '파스타': '',
-  '마라탕': '',
-  '한우 코스': '',
+// 장소 → 할 것(course) / 먹을 것(dinner)
+// reel: 인스타 앱 '공유 → 링크 복사' 한 주소 그대로. 비워두면 재생 버튼 안 뜸
+const AREAS = {
+  '한강': { sub: '망원 · 여의도 · 반포',
+    course: [
+      { name: '피크닉 & 물멍', desc: '돗자리 & 테이블 빌려서 노을 시간에 강변에서 쉬기', reel: '' },
+      { name: '따릉이 & 산책', desc: '해 질 녘 따릉이 타거나 강바람 맞으며 산책', reel: '' },
+      { name: '세빛섬 문보트', desc: '반포·여의도에서 문보트 타고 한강 야경', reel: '' },
+    ],
+    dinner: [
+      { name: '생새우회', desc: '근처 수산시장에서 포장해오기', reel: '' },
+      { name: '한강 라면 + 치킨', desc: '편의점에서 끓여먹는 라면 + 치킨 테이크아웃', reel: '' },
+      { name: '와인바 / 이자카야', desc: '망원·합정 골목 분위기 좋은 프라이빗 2차', reel: '' },
+    ] },
+  '부평 평리단길': { sub: '평리단길 · 문화의거리',
+    course: [
+      { name: '향수 공방 원데이 클래스', desc: '서로에게 어울리는 시그니처 향수 조향해서 교환', reel: '' },
+      { name: '소품샵 & 셀프 사진관', desc: '골목 소품샵 구경하고 셀프 사진관에서 생일 사진', reel: '' },
+      { name: '디저트 카페 투어', desc: '수제 케이크 놓고 생일 축하 타임', reel: '' },
+    ],
+    dinner: [
+      { name: '오캄 (OKLM)', desc: '시그니처 오캄 파스타 & 부챗살 스테이크', reel: '' },
+      { name: '당신과 나의 식탁', desc: '예약제로 운영하는 아늑한 퓨전 양식당', reel: '' },
+      { name: '구름드림', desc: '크로플 & 생일 디저트 세트', reel: '' },
+    ] },
+  '용리단길': { sub: '신용산 · 삼각지',
+    course: [
+      { name: '팝업 & 미술관', desc: '골목 팝업스토어 + 아모레퍼시픽 미술관 전시', reel: '' },
+      { name: 'LP바 탐방', desc: '레트로한 LP바에서 음악 들으며 대화', reel: '' },
+    ],
+    dinner: [
+      { name: '쌤쌤쌤', desc: '샌프란시스코 감성 수제 라자냐 & 파스타', reel: '' },
+      { name: '꺼거', desc: '홍콩 현지 분위기 트렌디한 아시안 다이닝', reel: '' },
+      { name: 'HBD 용산', desc: '컨템포러리 다이닝에서 와인 한 잔', reel: '' },
+    ] },
+  '덕수궁': { sub: '정동 · 광화문',
+    course: [
+      { name: '고궁 & 돌담길 산책', desc: '덕수궁 한옥·석조전 구경하고 돌담길 걷기', reel: '' },
+      { name: '서울시립미술관 전시', desc: 'SEMA 정동 본관 무료 전시', reel: '' },
+    ],
+    dinner: [
+      { name: '마이시크릿덴', desc: '돌담길 내려다보이는 와인바, 케이크 반입 가능', reel: '' },
+      { name: '덕수궁 리에제 와플', desc: '돌담길 입구 블루리본 수제 와플', reel: '' },
+      { name: '어반가든 / 정동장', desc: '숲속 정원 이탈리안 또는 정갈한 코스 요리', reel: '' },
+    ] },
+  '서울숲': { sub: '성수동',
+    course: [
+      { name: '숲속 피크닉', desc: '거울연못·사슴 산책로 따라 힐링 피크닉', reel: '' },
+      { name: '성수 아틀리에 길', desc: '소품샵·디자이너 편집숍·브랜드 팝업 투어', reel: '' },
+    ],
+    dinner: [
+      { name: '성수옥상', desc: '루프탑에서 수비드 삼겹살 + 와인잔 꾸미기', reel: '' },
+      { name: '난포 / 훼미리손칼국수보쌈', desc: '강된장쌈밥, 제철 회국수 감성 한식', reel: '' },
+      { name: '제스티살룬', desc: '서울숲 대표 와사비 쉬림프 버거', reel: '' },
+    ] },
 };
 
 // ===== helpers =====
 const $ = s => document.querySelector(s);
-const IMGS = { RUNNING_MEME_IMG, MILESTONE_CAKE_GIF, MEME_CARD_1_IMG, MEME_CARD_2_IMG, FAIL_WARNING_IMG, NERD_DOG_IMG, COMING_SOON_IMG };
+const IMGS = { RUNNING_MEME_IMG, MILESTONE_CAKE_GIF, MEME_CARD_1_IMG, MEME_CARD_2_IMG, FAIL_WARNING_IMG, NERD_DOG_IMG, PARTY_CAKE_IMG, PARTY_THROW_IMG };
 document.querySelectorAll('[data-img]').forEach(el => el.src = IMGS[el.dataset.img]);
 $('#rushImg').src = RUNNING_MEME_IMG;
 
@@ -397,6 +562,15 @@ function boom() {
   confetti({ particleCount: 80, angle: 60, spread: 70, origin: { x: 0 }, zIndex: 100 });
   confetti({ particleCount: 80, angle: 120, spread: 70, origin: { x: 1 }, zIndex: 100 });
 }
+// 위에서 계속 내리는 컨페티
+function confettiRain(ms) {
+  if (!window.confetti) return;
+  const end = Date.now() + ms;
+  const drop = setInterval(() => {
+    if (Date.now() > end) return clearInterval(drop);
+    confetti({ particleCount: 5, startVelocity: 0, gravity: .5, ticks: 400, spread: 360, scalar: 1.1, origin: { x: Math.random(), y: -.05 }, zIndex: 100 });
+  }, 120);
+}
 const openAt = new Date(`${BIRTHDAY}T19:00:00`);
 
 // D-day 타이틀
@@ -407,19 +581,86 @@ const openAt = new Date(`${BIRTHDAY}T19:00:00`);
 }
 
 // ===== 0. call =====
-const caller = CALLERS[Math.floor(Math.random() * CALLERS.length)];
-document.querySelectorAll('[data-name]').forEach(el => el.textContent = caller.name);
-// photo 있으면 프로필 사진 + 배경 포스터, 없으면 이니셜
-document.querySelectorAll('[data-avatar]').forEach(el => {
-  if (caller.photo) el.style.backgroundImage = `url("${caller.photo}")`;
-  else el.textContent = caller.avatar;
-});
-if (caller.photo) $('#call').style.background = `#000 url("${caller.photo}") center/cover`;
+// 세 명이 차례로 전화 → 마지막 통화 끝나면 파티
+let ci = -1, caller, accepted, ended, tick, typer, fallback, ac;
+// 벨소리: 마림바 느낌 합성음(사인파 + 짧은 4배음). 브라우저는 첫 터치 전엔 소리를 막아서
+// 잠금화면 터치로 풀어준 뒤 전화가 울림
+try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+const unlock = () => ac?.resume();
+['pointerdown', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, unlock, { capture: true, passive: true }));
+function marimba(f, t, out) {
+  // 마림바 배음: 기음 + 약 4배음 + 약 10배음(타격음), 높은 배음일수록 빨리 사라짐
+  [[1, .5, .5], [3.93, .18, .12], [9.2, .06, .04]].forEach(([mul, vol, len]) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = f * mul;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + .005);
+    g.gain.exponentialRampToValueAtTime(.0001, t + len);
+    o.connect(g).connect(out); o.start(t); o.stop(t + len);
+  });
+}
+const RING = [[1318.5, 0], [987.77, .14], [830.61, .28], [987.77, .42], [1318.5, .56], [1108.7, .84], [987.77, .98], [1318.5, 1.12]];
+let ringTimer, ringOut;
+const ringAudio = RINGTONE_SRC ? Object.assign(new Audio(RINGTONE_SRC), { loop: true }) : null;
+function startRingtone() {
+  stopRingtone();
+  if (ringAudio) { ringAudio.currentTime = 0; ringAudio.play().catch(() => {}); return; }
+  if (!ac) return;
+  ringOut = ac.createGain(); ringOut.gain.value = .6; ringOut.connect(ac.destination);
+  const out = ringOut;
+  const loop = () => {
+    // 잠겨 있는 동안엔 예약하지 않음(풀리는 순간 한꺼번에 울리는 것 방지)
+    if (ac.state === 'running') { const t = ac.currentTime + .05; RING.forEach(([f, dt]) => marimba(f, t + dt, out)); }
+    ringTimer = setTimeout(loop, ac.state === 'running' ? 2000 : 200);
+  };
+  loop();
+}
+function stopRingtone() {
+  ringAudio?.pause();
+  clearTimeout(ringTimer);
+  if (ringOut) { ringOut.gain.setTargetAtTime(0, ac.currentTime, .03); ringOut = null; }
+}
 
-let accepted = false, ended = false, tick, fallback;
+function ring(i) {
+  ci = i; caller = CALLERS[i]; accepted = ended = false;
+  document.querySelectorAll('[data-name]').forEach(el => el.textContent = caller.name);
+  // photo 있으면 프로필 사진 + 배경 포스터, 없으면 이니셜
+  document.querySelectorAll('[data-avatar]').forEach(el => {
+    el.style.backgroundImage = caller.photo ? `url("${caller.photo}")` : '';
+    el.textContent = caller.photo ? '' : caller.avatar;
+  });
+  // 사진을 흐린 배경 포스터로 깔고 어둡게 덮어 흰 글씨가 잘 보이게
+  $('#call').style.background = caller.photo ? `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.65)), #000 url("${caller.photo}") center/cover` : '';
+  $('#callTimer').textContent = '00:00';
+  $('#subtitle').textContent = '';
+  $('#knob').style.transform = '';
+  $('#ongoing').classList.add('hidden');
+  $('#incoming').classList.remove('hidden');
+  startRingtone();
+}
+// 잠금화면 시계 → 터치하면 소리 켜고 첫 전화 울림
+{
+  const tickLock = () => {
+    const d = new Date();
+    $('#lockDate').textContent = d.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' });
+    $('#lockTime').textContent = `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')}`;
+  };
+  tickLock();
+  const clock = setInterval(tickLock, 1000);
+  $('#lock').onclick = () => {
+    ac?.resume();
+    clearInterval(clock);
+    $('#lock').classList.add('hidden');
+    ring(0);
+  };
+}
+
 function accept() {
   if (accepted) return;
   accepted = true;
+  // 오디오는 사용자 제스처 안에서 열어둬야 나중에(통화 끝난 뒤) 소리가 남
+  ac?.resume();
+  stopRingtone();
   $('#reject').classList.add('hidden');
   $('#incoming').classList.add('hidden');
   $('#ongoing').classList.remove('hidden');
@@ -429,28 +670,30 @@ function accept() {
   tick = setInterval(() => { sec++; $('#callTimer').textContent = `${fmt(sec / 60 | 0)}:${fmt(sec % 60)}`; }, 1000);
 
   // 자막 타이핑
-  const sub = $('#subtitle'); let i = 0;
-  const type = setInterval(() => { sub.textContent = caller.line.slice(0, ++i); if (i >= caller.line.length) clearInterval(type); }, 70);
+  const sub = $('#subtitle'), line = caller.line; let i = 0;
+  typer = setInterval(() => { sub.textContent = line.slice(0, ++i); if (i >= line.length) clearInterval(typer); }, 70);
 
   // TTS: iOS는 클릭 핸들러 안에서 바로 speak 해야 소리 남
   // 인앱 브라우저에서 onend가 안 오는 경우 대비해 길이 기반 타이머로도 종료
-  fallback = setTimeout(endCall, caller.line.length * 220 + 2500);
+  fallback = setTimeout(endCall, line.length * 220 + 2500);
   if ('speechSynthesis' in window) {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(caller.line);
+    const u = new SpeechSynthesisUtterance(line), me = ci;
     u.lang = 'ko-KR'; u.pitch = caller.pitch; u.rate = caller.rate;
     const v = speechSynthesis.getVoices().find(v => v.lang.startsWith('ko'));
     if (v) u.voice = v;
-    u.onend = () => setTimeout(endCall, 600);
+    u.onend = () => setTimeout(() => ci === me && endCall(), 600); // 이전 통화의 늦은 onend 무시
     speechSynthesis.speak(u);
   }
 }
 function endCall() {
   if (ended) return;
   ended = true;
-  clearInterval(tick); clearTimeout(fallback);
+  clearInterval(tick); clearInterval(typer); clearTimeout(fallback);
   if ('speechSynthesis' in window) speechSynthesis.cancel();
-  rush();
+  $('#callTimer').textContent = '통화 종료';
+  if (ci < CALLERS.length - 1) setTimeout(() => ring(ci + 1), 900);
+  else rush();
 }
 $('#btnEnd').onclick = endCall;
 $('#btnForce').onclick = accept;
@@ -476,42 +719,136 @@ $('#btnReject').onclick = $('#btnMsg').onclick = () => $('#reject').classList.re
 }
 
 // ===== 0-1. rush =====
-function rush() {
+// 쿵(낮은음)/쾅(높은음 + 잡음) 번갈아 합성
+function thump(big) {
+  if (!ac) return;
+  const t = ac.currentTime, out = ac.createGain();
+  out.gain.setValueAtTime(big ? .9 : .7, t);
+  out.gain.exponentialRampToValueAtTime(.001, t + .22);
+  out.connect(ac.destination);
+  const o = ac.createOscillator();
+  o.frequency.setValueAtTime(big ? 190 : 130, t);
+  o.frequency.exponentialRampToValueAtTime(40, t + .18);
+  o.connect(out); o.start(t); o.stop(t + .22);
+  if (!big) return;
+  const n = ac.createBufferSource(), buf = ac.createBuffer(1, ac.sampleRate * .08, ac.sampleRate);
+  buf.getChannelData(0).forEach((_, i, d) => d[i] = (Math.random() * 2 - 1) * (1 - i / d.length));
+  n.buffer = buf; n.connect(out); n.start(t);
+}
+// 생일 축하 노래 (8비트 네모파). [음, 박자]
+function playSong() {
+  if (!ac) return;
+  const hz = { G4: 392, A4: 440, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
+  const song = [
+    ['G4', .75], ['G4', .25], ['A4', 1], ['G4', 1], ['C5', 1], ['B4', 2],
+    ['G4', .75], ['G4', .25], ['A4', 1], ['G4', 1], ['D5', 1], ['C5', 2],
+    ['G4', .75], ['G4', .25], ['G5', 1], ['E5', 1], ['C5', 1], ['B4', 1], ['A4', 2],
+    ['F5', .75], ['F5', .25], ['E5', 1], ['C5', 1], ['D5', 1], ['C5', 3],
+  ];
+  let t = ac.currentTime + .05;
+  for (const [n, beats] of song) {
+    const d = beats * .34, o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'square'; o.frequency.value = hz[n];
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.1, t + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, t + d * .95);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + d);
+    t += d;
+  }
+}
+
+// 다가오기: 이동(좌우반전+쿵쾅) → 멈춤 → 이동 → 멈춤 → 코앞 → 해피버스데이
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function rush() {
   $('#rush').classList.remove('hidden');
   $('#call').classList.add('hidden');
-  setTimeout(() => {
-    boom();
-    $('#rush').classList.add('hidden');
-    $('#main').classList.remove('hidden');
-    state.confirmed ? showLetter() : show('#plan');
-  }, 1500);
+  const zoom = $('.rush-zoom'), flip = $('.rush-flip');
+  const move = async (scale, ms) => {
+    let k = 0;
+    thump(0);
+    const flipper = setInterval(() => { flip.classList.toggle('m', ++k % 2); thump(k % 2); }, 180);
+    zoom.style.transition = `transform ${ms}ms cubic-bezier(.4, 0, .6, 1)`;
+    zoom.style.transform = `scale(${scale})`;
+    await wait(ms);
+    clearInterval(flipper);
+    flip.classList.remove('m');
+  };
+  await wait(50);
+  await move(.5, 700); await wait(700);
+  await move(1, 700); await wait(700);
+  await move(1.5, 500);
+  thump(1); boom(); confettiRain(10000); playSong();
+  $('#party').classList.remove('hidden');
 }
+$('#rushGo').onclick = () => {
+  $('#rush').classList.add('hidden');
+  $('#main').classList.remove('hidden');
+  show('#plan');
+};
 
 // ===== 1. plan =====
-for (const [key, list] of Object.entries(OPTIONS)) {
-  $(`[data-chips="${key}"]`).innerHTML = list
-    .map(v => `<label><input type="radio" name="${key}" value="${v}"><span>${v}${REELS[v] ? `<button type="button" class="play" data-reel="${v}" aria-label="${v} 릴스 보기"><svg><use href="#i-play"/></svg></button>` : ''}</span></label>`).join('');
-}
+const form = $('#planForm');
+const pills = (key, list) => list.map(v => `<label><input type="radio" name="${key}" value="${v}"><span>${v}</span></label>`).join('');
+const opts = (key, list) => list.map((o, i) => `<label class="opt"><input type="radio" name="${key}" value="${o.name}"><div><span><b>${o.name}</b><small>${o.desc}</small></span>${o.reel ? `<button type="button" class="reel-btn" data-reel="${key}:${i}" aria-label="${o.name} 릴스 보기"><svg><use href="#i-play"/></svg></button>` : ''}</div></label>`).join('');
+$('[data-chips="time"]').innerHTML = pills('time', TIMES);
+$('[data-chips="place"]').innerHTML = pills('place', Object.keys(AREAS));
 
-// 릴스 보기: 버튼은 label 안의 버튼이라 눌러도 선택은 안 바뀜
+// 한 화면에 질문 하나: 고르면 다음 질문으로 슬라이드
+const slides = [...document.querySelectorAll('.slide')], dots = [...document.querySelectorAll('.wiz-dots i')];
+let step = 0;
+function go(n) {
+  slides[step].classList.add('hidden');
+  const s = slides[n];
+  s.classList.remove('hidden', 'next', 'prev'); void s.offsetWidth; s.classList.add(n >= step ? 'next' : 'prev');
+  step = n;
+  dots.forEach((d, i) => d.classList.toggle('on', i <= n));
+  $('#wizCount').textContent = `${n + 1}/${slides.length}`;
+  $('#wizBack').disabled = n === 0;
+  if (form.getBoundingClientRect().top < 0) form.scrollIntoView({ behavior: 'smooth' });
+}
+$('#wizBack').onclick = () => step && go(step - 1);
+
+// 이미 고른 걸 다시 눌러도 넘어가게 change 말고 click으로 받음
+let area, areaName;
+function choose(input) {
+  const { name, value } = input;
+  if (name === 'place' && value !== areaName) {
+    areaName = value; area = AREAS[value];
+    $('#areaSub').textContent = area.sub;
+    $('[data-opts="course"]').innerHTML = opts('course', area.course);
+    $('[data-opts="dinner"]').innerHTML = opts('dinner', area.dinner);
+  }
+  const i = ['time', 'place', 'course'].indexOf(name);
+  if (i >= 0) setTimeout(() => step === i && go(i + 1), 250);
+}
+form.addEventListener('click', e => { if (e.target.matches('input[type=radio]')) choose(e.target); });
+
+// 릴스 보기: 버튼은 label 안의 버튼이라 눌러도 선택은 안 바뀜. 시트에서 '이걸로 할래'로 선택
 const reelEmbed = url => {
   const m = url.match(/instagram\.com\/(reels?|p)\/([\w-]+)/);
   return m && `https://www.instagram.com/${m[1] === 'p' ? 'p' : 'reel'}/${m[2]}/embed/`;
 };
-$('#planForm').addEventListener('click', e => {
+let pick;
+form.addEventListener('click', e => {
   const b = e.target.closest('[data-reel]');
   if (!b) return;
-  const url = REELS[b.dataset.reel], embed = reelEmbed(url);
-  if (!embed) return open(url, '_blank');
-  $('#reelTitle').textContent = b.dataset.reel;
-  $('#reelLink').href = url;
+  const [key, i] = b.dataset.reel.split(':');
+  const item = area[key][i], embed = reelEmbed(item.reel);
+  if (!embed) return open(item.reel, '_blank');
+  pick = { key, name: item.name };
+  $('#reelTitle').textContent = item.name;
+  $('#reelLink').href = item.reel;
   $('#reelFrame').src = embed;
   $('#reel').classList.remove('hidden');
 });
-$('#reelClose').onclick = $('#reel').onclick = e => {
-  if (e.target !== e.currentTarget) return;
-  $('#reel').classList.add('hidden');
-  $('#reelFrame').src = 'about:blank';
+const closeReel = () => { $('#reel').classList.add('hidden'); $('#reelFrame').src = 'about:blank'; };
+$('#reelClose').onclick = closeReel;
+$('#reel').onclick = e => { if (e.target === e.currentTarget) closeReel(); };
+$('#reelPick').onclick = () => {
+  const input = [...form.querySelectorAll(`input[name="${pick.key}"]`)].find(r => r.value === pick.name);
+  input.checked = true;
+  closeReel();
+  choose(input);
 };
 function planStops(p) {
   const [h, m] = p.time.split(':').map(Number);
@@ -519,11 +856,11 @@ function planStops(p) {
   return [[p.time, `${p.place} 만남`], [next, `${p.course} 데이트 시작`], ['18:30', `${p.dinner} 맛있는 저녁 식사`]];
 }
 let plan;
-$('#planForm').onsubmit = e => {
+form.onsubmit = e => {
   e.preventDefault();
   const f = new FormData(e.target);
-  const p = Object.fromEntries(Object.keys(OPTIONS).map(k => [k, f.get(k)]));
-  if (Object.values(p).some(v => !v)) { shake(e.target); return toast('다 골라야 함 🤪'); }
+  const p = Object.fromEntries(['time', 'place', 'course', 'dinner'].map(k => [k, f.get(k)]));
+  if (Object.values(p).some(v => !v)) { shake(e.target); return toast('다 골라야 함'); }
   plan = p;
   planStops(p).forEach(([t, txt], i) => { $(`[data-t="${i}"]`).textContent = t; $(`[data-p="${i}"]`).textContent = txt; });
   show('#ticketView');
@@ -555,29 +892,48 @@ $('#btnDecide').onclick = () => {
 let cd;
 function showLetter() {
   show('#letterView');
-  $('#safe').classList.remove('hidden', 'open');
-  $('#letter').classList.add('hidden');
+  $('#safe').className = 'card safe';
+  $('#letterWrap').classList.add('hidden');
+  $('#btnOpen').classList.add('hidden');
   const fmt = n => String(n).padStart(2, '0');
   const render = () => {
     const ms = openAt - Date.now();
-    if (ms <= 0) { $('#cdText').textContent = 'OPEN!'; return clearInterval(cd); }
+    if (ms <= 0) {
+      // 타이머 끝: 자물쇠 풀고 '편지 열어보기' 버튼 등장
+      $('#cdLabel').textContent = '편지가 도착했어요';
+      $('#cdText').textContent = 'OPEN!';
+      $('#safeMsg').textContent = '19시가 됐어요! 편지를 열어보세요';
+      $('#safe').classList.add('ready');
+      $('#btnOpen').classList.remove('hidden');
+      return clearInterval(cd);
+    }
     const s = ms / 1000 | 0, d = s / 86400 | 0;
     $('#cdText').textContent = (d ? `${d}D ` : '') + `${fmt(s / 3600 % 24 | 0)}:${fmt(s / 60 % 60 | 0)}:${fmt(s % 60)}`;
   };
   clearInterval(cd); render(); cd = setInterval(render, 1000);
 }
-$('#btnSafe').onclick = () => {
-  if (Date.now() >= openAt) {
-    $('#safe').classList.add('open');
+function openLetter() {
+  const safe = $('#safe');
+  if (safe.classList.contains('opening')) return;
+  safe.classList.add('opening');
+  setTimeout(() => {
+    safe.classList.add('hidden');
+    // 한 줄씩 써지듯 나타나게
+    const l = $('#letter');
+    l.replaceChildren(...LETTER.split('\n').map((line, i) => {
+      const s = document.createElement('span');
+      s.textContent = line;
+      s.style.animationDelay = `${.8 + i * .12}s`;
+      return s;
+    }));
+    $('#letterWrap').classList.remove('hidden');
+    $('#letterWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     boom();
-    return setTimeout(() => {
-      $('#safe').classList.add('hidden');
-      const l = $('#letter'); l.textContent = LETTER; l.classList.remove('hidden');
-    }, 800);
-  }
-  const wait = 60 - ((Date.now() - (state.lastTap || 0)) / 1000 | 0);
-  if (wait > 0) return toast(`1분에 1번만! ${wait}초 뒤에 다시 🤪`);
-  state.lastTap = Date.now(); save(state);
+  }, 1200);
+}
+$('#btnOpen').onclick = openLetter;
+$('#btnSafe').onclick = () => {
+  if (Date.now() >= openAt) return openLetter();
   shake($('#btnSafe'));
   toast('아직 안 열림 ㅋ 19시까지 기다려');
 };
@@ -586,9 +942,20 @@ $('#btnReset').onclick = () => {
   try { localStorage.removeItem(KEY); } catch {}
   state = {};
   clearInterval(cd);
-  $('#planForm').reset();
+  form.reset();
+  areaName = null;
+  go(0);
   show('#plan');
 };
+
+// ===== 개발용 편지 미리보기 (버튼 태그를 주석처리하면 같이 꺼짐) =====
+$('#devLetter')?.addEventListener('click', () => {
+  stopRingtone();
+  ['#lock', '#call', '#reject', '#rush'].forEach(s => $(s).classList.add('hidden'));
+  $('#main').classList.remove('hidden');
+  showLetter();
+  openLetter();
+});
 </script>
 </body>
 </html>
