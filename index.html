@@ -14,7 +14,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
 <style>
@@ -525,31 +525,29 @@ const TIMES = ['14:00', '15:00', '16:00'];
 
 // 장소 → 할 것(course) / 먹을 것(dinner)
 // reels(장소) / reel(항목): 인스타 앱 '공유 → 링크 복사' 한 주소 그대로. 비워두면 재생 버튼 안 뜸
+// 저녁은 가게/메뉴 이름 없이 종류만
+const DINNER = [
+  { name: '한식', desc: '든든하게 밥심 충전', reel: '' },
+  { name: '양식', desc: '분위기 있게 칼질', reel: '' },
+  { name: '중식', desc: '이것저것 나눠 먹는 재미', reel: '' },
+  { name: '일식', desc: '깔끔하고 정갈하게', reel: '' },
+];
 const AREAS = {
   '한강': { sub: '망원 · 여의도 · 반포',
     reels: ['https://www.instagram.com/reel/DdGeEv5S8ya/', 'https://www.instagram.com/reel/DbatWNGpLye/'],
     course: [
       { name: '피크닉 & 물멍', desc: '돗자리 & 테이블 빌려서 노을 시간에 강변에서 쉬기', reel: '' },
       { name: '따릉이 & 산책', desc: '해 질 녘 따릉이 타거나 강바람 맞으며 산책', reel: '' },
-      { name: '세빛섬 문보트', desc: '반포·여의도에서 문보트 타고 한강 야경', reel: '' },
     ],
-    dinner: [
-      { name: '생새우회', desc: '근처 수산시장에서 포장해오기', reel: '' },
-      { name: '한강 라면 + 치킨', desc: '편의점에서 끓여먹는 라면 + 치킨 테이크아웃', reel: '' },
-      { name: '와인바 / 이자카야', desc: '망원·합정 골목 분위기 좋은 프라이빗 2차', reel: '' },
-    ] },
+    dinner: DINNER },
   '부평 평리단길': { sub: '평리단길 · 문화의거리',
     reels: ['https://www.instagram.com/reel/DdoQIBhTj6s/'],
     course: [
-      { name: '향수 공방 원데이 클래스', desc: '서로에게 어울리는 시그니처 향수 조향해서 교환', reel: '' },
-      { name: '소품샵 & 셀프 사진관', desc: '골목 소품샵 구경하고 셀프 사진관에서 생일 사진', reel: '' },
-      { name: '디저트 카페 투어', desc: '수제 케이크 놓고 생일 축하 타임', reel: '' },
+      { name: '향수 공방 원데이 클래스', desc: '신효섭이 좋아하는 향 탐구', reel: '' },
+      { name: '소품샵 & 셀프 사진관', desc: '골목 소품샵 구경하고 생일 기념 사진', reel: '' },
+      { name: '생일 케이크 먹방', desc: '케이크 놓고 생일 축하 타임', reel: '' },
     ],
-    dinner: [
-      { name: '오캄 (OKLM)', desc: '시그니처 오캄 파스타 & 부챗살 스테이크', reel: '' },
-      { name: '당신과 나의 식탁', desc: '예약제로 운영하는 아늑한 퓨전 양식당', reel: '' },
-      { name: '구름드림', desc: '크로플 & 생일 디저트 세트', reel: '' },
-    ] },
+    dinner: DINNER },
   '해방촌': { sub: '남산 아래 · 신흥시장',
     reels: ['https://www.instagram.com/reel/DdLHOfRS_rA/'],
     course: [
@@ -557,33 +555,21 @@ const AREAS = {
       { name: '남산 산책 & 서울타워 야경', desc: '해방촌 오거리에서 남산으로 올라가 노을 보기', reel: '' },
       { name: '루프탑 카페', desc: '남산타워가 한눈에 보이는 루프탑에서 쉬기', reel: '' },
     ],
-    dinner: [
-      { name: '루프탑 바 & 다이닝', desc: '서울 야경 보면서 저녁 + 한 잔', reel: '' },
-      { name: '신흥시장 맛집', desc: '시장 골목 분위기 좋은 로컬 식당', reel: '' },
-      { name: '경리단길 세계음식', desc: '근처 경리단길·이태원까지 내려가서 골라 먹기', reel: '' },
-    ] },
+    dinner: DINNER },
   '덕수궁': { sub: '정동 · 광화문',
     reels: ['https://www.instagram.com/reel/C_U7-7rpeIP/'],
     course: [
       { name: '고궁 & 돌담길 산책', desc: '덕수궁 한옥·석조전 구경하고 돌담길 걷기', reel: '' },
       { name: '서울시립미술관 전시', desc: 'SEMA 정동 본관 무료 전시', reel: '' },
     ],
-    dinner: [
-      { name: '마이시크릿덴', desc: '돌담길 내려다보이는 와인바, 케이크 반입 가능', reel: '' },
-      { name: '덕수궁 리에제 와플', desc: '돌담길 입구 블루리본 수제 와플', reel: '' },
-      { name: '어반가든 / 정동장', desc: '숲속 정원 이탈리안 또는 정갈한 코스 요리', reel: '' },
-    ] },
+    dinner: DINNER },
   '서울숲': { sub: '성수동',
     reels: ['https://www.instagram.com/reel/DYzdFrtxdcf/'],
     course: [
       { name: '숲속 피크닉', desc: '거울연못·사슴 산책로 따라 힐링 피크닉', reel: '' },
       { name: '성수 아틀리에 길', desc: '소품샵·디자이너 편집숍·브랜드 팝업 투어', reel: '' },
     ],
-    dinner: [
-      { name: '성수옥상', desc: '루프탑에서 수비드 삼겹살 + 와인잔 꾸미기', reel: '' },
-      { name: '난포 / 훼미리손칼국수보쌈', desc: '강된장쌈밥, 제철 회국수 감성 한식', reel: '' },
-      { name: '제스티살룬', desc: '서울숲 대표 와사비 쉬림프 버거', reel: '' },
-    ] },
+    dinner: DINNER },
 };
 
 // ===== helpers =====
@@ -1072,11 +1058,11 @@ function openLetter() {
   }, 1200);
 }
 // ===== 편지지 이미지로 저장 =====
-// 편지 글을 편지지(900x1600) 위에 손글씨체(개구)로 그려 JPG 여러 장으로 만듦.
-// 한 장에 15줄(y=390부터 58px 간격). 클립 옆 줄(y<520)은 폭을 줄여 클립을 피함.
-// 새 문단은 한 줄 띄우고 시작, 남은 줄이 3줄 미만이면 다음 장에서 시작
-const PAGE = { w: 900, h: 1600, left: 140, top: 390, gap: 58, lines: 15, font: 'bold 42px Gaegu' };
-const slotWidth = i => PAGE.top + i * PAGE.gap < 520 ? 495 : 600;
+// 편지 글을 편지지(900x1600) 위에 손글씨체(나눔손글씨 펜)로 그려 JPG 여러 장으로 만듦.
+// 한 장에 20줄(y=380부터 50px 간격). 클립 옆 줄(y<520)과 오른쪽 아래 별 옆 줄(y>1250)은 폭을 줄여 피함.
+// 새 문단은 한 줄 띄우고 시작, 남은 줄이 2줄 미만이면 다음 장에서 시작
+const PAGE = { w: 900, h: 1600, left: 140, top: 380, gap: 50, lines: 20, font: '44px "Nanum Pen Script"' };
+const slotWidth = i => { const y = PAGE.top + i * PAGE.gap; return y < 520 ? 495 : y > 1250 ? 545 : 600; };
 async function makeLetterPages() {
   await document.fonts.load(PAGE.font, letterText + '0123456789 /'); // 한글 웹폰트는 글자 조각별로 받아서, 편지에 쓰인 글자를 넘겨줘야 다 받아짐
   const bg = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = 'letter_paper.jpg'; });
@@ -1088,7 +1074,7 @@ async function makeLetterPages() {
   const push = line => { if (page().length === PAGE.lines) pages.push([]); page().push(line); };
   const fits = t => x.measureText(t).width <= slotWidth(page().length === PAGE.lines ? 0 : page().length);
   for (const para of letterText.trim().split(/\n\s*\n/)) {
-    if (page().length) { if (PAGE.lines - page().length < 4) pages.push([]); else push(''); }
+    if (page().length) { if (PAGE.lines - page().length < 3) pages.push([]); else push(''); }
     for (const src of para.split('\n')) {
       let cur = '';
       for (const word of src.split(' ')) {
@@ -1103,9 +1089,10 @@ async function makeLetterPages() {
   const files = [];
   for (const [pg, lines] of pages.entries()) {
     x.drawImage(bg, 0, 0, PAGE.w, PAGE.h);
-    x.fillStyle = '#3b3530'; x.font = PAGE.font; x.textAlign = 'left';
-    lines.forEach((l, i) => x.fillText(l, PAGE.left, PAGE.top + i * PAGE.gap));
-    if (pages.length > 1) { x.font = 'bold 30px Gaegu'; x.fillStyle = '#8a8076'; x.textAlign = 'center'; x.fillText(`${pg + 1} / ${pages.length}`, PAGE.w / 2, 1340); }
+    // 나눔손글씨 펜은 획이 가늘어서 같은 색 테두리를 살짝 둘러 도톰하게
+    x.fillStyle = x.strokeStyle = '#2e2a26'; x.lineWidth = 1.2; x.lineJoin = 'round'; x.font = PAGE.font; x.textAlign = 'left';
+    lines.forEach((l, i) => { x.strokeText(l, PAGE.left, PAGE.top + i * PAGE.gap); x.fillText(l, PAGE.left, PAGE.top + i * PAGE.gap); });
+    if (pages.length > 1) { x.font = '36px "Nanum Pen Script"'; x.fillStyle = '#8a8076'; x.textAlign = 'center'; x.fillText(`${pg + 1} / ${pages.length}`, PAGE.w / 2, 1372); }
     const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .92));
     files.push(new File([blob], `효섭_생일편지_${pg + 1}.jpg`, { type: 'image/jpeg' }));
   }
