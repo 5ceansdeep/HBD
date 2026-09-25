@@ -14,10 +14,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
 <style>
+  @font-face { font-family: 'KCC-Kimhoon'; src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/KCC-Kimhoon-Regular.woff') format('woff'); font-display: swap; }
   :root {
     --bg: #fff; --card: #f5f5f7; --ink: #191919; --sub: #8b8b8b; --line: #ececec;
     --accent: #ff4f7b; --accent-soft: #fff0f3;
@@ -306,7 +306,7 @@
   .safe.opening p, .safe.opening .btn { transition: opacity .3s; opacity: 0; }
   @keyframes env-open { to { transform: translateY(40px) scale(.6); opacity: 0; } }
   /* iOS 시스템 알림 느낌 */
-  #pwAlert, #sysAlert { position: fixed; inset: 0; z-index: 85; display: grid; place-items: center; background: rgba(0,0,0,.4); }
+  #pwAlert, #sysAlert, #shareAlert { position: fixed; inset: 0; z-index: 85; display: grid; place-items: center; background: rgba(0,0,0,.4); }
   .alert {
     width: 270px; border-radius: 14px; overflow: hidden; text-align: center; color: #000;
     background: rgba(242,242,247,.94); backdrop-filter: blur(20px);
@@ -480,6 +480,7 @@
     </div>
   </div>
 
+  <div id="shareAlert" class="hidden"><div class="alert"><b>데이트 코스 확정!</b><p>코스 오수현한테 공유해줘</p><div class="alert-btns"><button id="shareOk">공유하기</button></div></div></div>
   <div id="pwAlert" class="hidden"><div class="alert"><b>편지 비밀번호</b><p id="pwMsg"></p><input id="pwInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="편지 비밀번호"><div class="alert-btns"><button id="pwCancel">취소</button><button id="pwOk">확인</button></div></div></div>
   <div id="sysAlert" class="hidden"><div class="alert"><b id="alertTitle"></b><p id="alertMsg"></p><div class="alert-btns"><button id="alertCancel">취소</button><button id="alertOk">다운로드</button></div></div></div>
   <div id="gallery" class="hidden">
@@ -1001,7 +1002,6 @@ $('#btnBack').onclick = () => show('#plan');
 function share(p) {
   // 효섭 화면엔 '오수현한테 공유해줘' 안내, 수현이 받는 메시지는 코스 내용
   const ask = '코스 오수현한테 공유해줘';
-  toast(ask);
   const text = '🎂 효섭 생일 데이트 코스\n\n' + planStops(p).map(([t, s]) => `${t} ${s}`).join('\n');
   try {
     if (window.Kakao && KAKAO_JS_KEY) {
@@ -1012,11 +1012,16 @@ function share(p) {
   if (navigator.share) return navigator.share({ title: ask, text }).catch(() => {});
   navigator.clipboard?.writeText(text).then(() => toast('복사됨! 오수현한테 카톡으로 보내줘'));
 }
+// 결정하기 → '코스 오수현한테 공유해줘' 알림 → 공유하기(여기서 공유창을 열어야 사용자 동작으로 인정됨)
 $('#btnDecide').onclick = () => {
-  share(plan);
   state = { ...state, confirmed: true, plan };
   save(state);
   boom();
+  $('#shareAlert').classList.remove('hidden');
+};
+$('#shareOk').onclick = () => {
+  $('#shareAlert').classList.add('hidden');
+  share(plan);
   showLetter();
 };
 
@@ -1058,10 +1063,11 @@ function openLetter() {
   }, 1200);
 }
 // ===== 편지지 이미지로 저장 =====
-// 편지 글을 편지지(900x1600) 위에 손글씨체(나눔손글씨 펜)로 그려 JPG 여러 장으로 만듦.
+// 편지 글을 편지지(900x1600) 위에 손글씨체(KCC 김훈체)로 그려 JPG 여러 장으로 만듦.
+// 저장할 땐 종이 부분만 잘라 1080px 폭으로 키워서(폰에서 글씨가 크게 보이게) 내보냄
 // 한 장에 20줄(y=380부터 50px 간격). 클립 옆 줄(y<520)과 오른쪽 아래 별 옆 줄(y>1250)은 폭을 줄여 피함.
 // 새 문단은 한 줄 띄우고 시작, 남은 줄이 2줄 미만이면 다음 장에서 시작
-const PAGE = { w: 900, h: 1600, left: 140, top: 380, gap: 50, lines: 20, font: '44px "Nanum Pen Script"' };
+const PAGE = { w: 900, h: 1600, left: 140, top: 380, gap: 50, lines: 20, font: '40px "KCC-Kimhoon"' };
 const slotWidth = i => { const y = PAGE.top + i * PAGE.gap; return y < 520 ? 495 : y > 1250 ? 545 : 600; };
 async function makeLetterPages() {
   await document.fonts.load(PAGE.font, letterText + '0123456789 /'); // 한글 웹폰트는 글자 조각별로 받아서, 편지에 쓰인 글자를 넘겨줘야 다 받아짐
@@ -1086,14 +1092,18 @@ async function makeLetterPages() {
       push(cur);
     }
   }
+  // 종이(별·클립 포함) 영역만 잘라 확대
+  const CROP = { x: 60, y: 200, w: 770, h: 1220 }, o = document.createElement('canvas');
+  o.width = 1080; o.height = Math.round(1080 * CROP.h / CROP.w);
   const files = [];
   for (const [pg, lines] of pages.entries()) {
     x.drawImage(bg, 0, 0, PAGE.w, PAGE.h);
-    // 나눔손글씨 펜은 획이 가늘어서 같은 색 테두리를 살짝 둘러 도톰하게
-    x.fillStyle = x.strokeStyle = '#2e2a26'; x.lineWidth = 1.2; x.lineJoin = 'round'; x.font = PAGE.font; x.textAlign = 'left';
+    // 김훈체는 획이 가늘어서 같은 색 테두리를 살짝 둘러 또렷하게
+    x.fillStyle = x.strokeStyle = '#2e2a26'; x.lineWidth = .9; x.lineJoin = 'round'; x.font = PAGE.font; x.textAlign = 'left';
     lines.forEach((l, i) => { x.strokeText(l, PAGE.left, PAGE.top + i * PAGE.gap); x.fillText(l, PAGE.left, PAGE.top + i * PAGE.gap); });
-    if (pages.length > 1) { x.font = '36px "Nanum Pen Script"'; x.fillStyle = '#8a8076'; x.textAlign = 'center'; x.fillText(`${pg + 1} / ${pages.length}`, PAGE.w / 2, 1372); }
-    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .92));
+    if (pages.length > 1) { x.font = '30px "KCC-Kimhoon"'; x.fillStyle = '#8a8076'; x.textAlign = 'center'; x.fillText(`${pg + 1} / ${pages.length}`, PAGE.w / 2, 1372); }
+    o.getContext('2d').drawImage(c, CROP.x, CROP.y, CROP.w, CROP.h, 0, 0, o.width, o.height);
+    const blob = await new Promise(r => o.toBlob(r, 'image/jpeg', .92));
     files.push(new File([blob], `효섭_생일편지_${pg + 1}.jpg`, { type: 'image/jpeg' }));
   }
   return files;
@@ -1165,10 +1175,10 @@ $('#btnOpen').onclick = requestLetter;
 $('#btnSafe').onclick = () => {
   if (Date.now() >= openAt) return requestLetter();
   shake($('#btnSafe'));
-  toast('아직 안 열림 ㅋ 19시까지 기다려');
+  toast('습 19시까지 기다려~~');
 };
 $('#btnReset').onclick = () => {
-  if (!confirm('데이트 코스 다시 고를래?')) return;
+  if (!confirm('헐 데이트 코스 다시 고를거야??')) return;
   try { localStorage.removeItem(KEY); } catch {}
   state = {};
   clearInterval(cd);
