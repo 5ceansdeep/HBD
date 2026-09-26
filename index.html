@@ -447,7 +447,7 @@
         <div class="timeline" id="timeline">
         </div>
         <div class="perf"></div>
-        <div class="no-capture"><i class="barcode"></i><span>환불·양도·취소 불가 (효섭 전용)</span></div>
+        <div class="no-capture"><i class="barcode"></i><span>환불·양도·취소 불가</span></div>
       </div>
       <div class="row">
         <button class="btn ghost" id="btnBack">다시</button>
@@ -491,7 +491,7 @@
   <div id="toast"></div>
 
   <!-- 개발용: 편지 미리보기 버튼. 배포(push) 전에 아래 줄을 주석처리하세요 -->
-  <button class="dev-btn" id="devLetter">편지 미리보기</button>
+  <!-- <button class="dev-btn" id="devLetter">편지 미리보기</button> -->
 </div>
 
 <script src="letter.js"></script>
@@ -522,7 +522,7 @@ const CALLERS = [
     subs: [[0.12, 2.18, '효섭 선수, 오늘 생일 딜교 완벽했습니다.'], [2.84, 5.58, '오늘 저녁은 하이디라오 동선으로 깔끔하게 미는 걸 추천합니다.'], [6.24, 6.92, '생일 축하드립니다.']] },
 ];
 
-const TIMES = ['14:00', '15:00', '16:00'];
+const TIMES = ['13:00', '14:00', '15:00', '16:00'];
 
 // 장소 → 할 것(course) / 먹을 것(dinner)
 // reels(장소) / reel(항목): 인스타 앱 '공유 → 링크 복사' 한 주소 그대로. 비워두면 재생 버튼 안 뜸
@@ -552,25 +552,77 @@ const AREAS = {
   '해방촌': { sub: '남산 아래 · 신흥시장',
     reels: ['https://www.instagram.com/reel/DdLHOfRS_rA/'],
     course: [
-      { name: '신흥시장 골목 구경', desc: '오래된 시장 골목에 들어선 카페·소품샵 구경', reel: '' },
+      { name: '신흥시장 골목 구경', desc: '신기한 구조물·거울 가득한 골목에서 거울샷 & 인생샷', reel: '' },
+      { name: '모드빈티지 해방촌', desc: '사진 보정도 되고 엽서 만들기도 가능', reel: '' },
+      { name: '태그모어 (TAG MORE)', desc: '빈티지 가방·모자·의류 편집샵 구경', reel: '' },
+      { name: '카페 오랑오랑', desc: '테라스 분위기 좋은 카페, 티라미수 추천', reel: '' },
+      { name: '프루프인더커피', desc: '녹사평역 · 소월로38가길 24', reel: '' },
+      { name: '카페타자기', desc: '녹사평역 · 신흥로 97-5 2층', reel: '' },
+      { name: 'S.caf', desc: '녹사평역 · 소월로26길 12 아르테소월 3층', reel: '' },
+      { name: '빌라커피바', desc: '녹사평역 · 신흥로 101-9 2층', reel: '' },
+      { name: '카페다포딜', desc: '녹사평역 · 신흥로22가길 25 1층', reel: '' },
+      { name: '오잇', desc: '녹사평역 · 신흥로 95', reel: '' },
       { name: '남산 산책 & 서울타워 야경', desc: '해방촌 오거리에서 남산으로 올라가 노을 보기', reel: '' },
       { name: '루프탑 카페', desc: '남산타워가 한눈에 보이는 루프탑에서 쉬기', reel: '' },
     ],
-    dinner: DINNER },
+    dinner: [...DINNER,
+      { name: '꿀대구', desc: '해방촌에서만 고를 수 있는 스페셜', reel: '' },
+      { name: '성광대도', desc: '분위기도 맛도 좋은 홍콩st 요리주점', reel: '' },
+      { name: 'Neighbours', desc: '분위기 좋은 레스토랑 겸 와인바', reel: '' },
+    ] },
   '덕수궁': { sub: '정동 · 광화문',
     reels: ['https://www.instagram.com/reel/C_U7-7rpeIP/'],
     course: [
-      { name: '고궁 & 돌담길 산책', desc: '덕수궁 한옥·석조전 구경하고 돌담길 걷기', reel: '' },
-      { name: '서울시립미술관 전시', desc: 'SEMA 정동 본관 무료 전시', reel: '' },
+      { name: '덕수궁 & 돌담길 산책', desc: '궁궐부터 분수대까지 천천히 산책 · 9:00~21:00 (월 휴무)', reel: '' },
+      { name: '서울시립미술관 전시', desc: '유영국: 산은 내 안에 있다 · 무료 회고전 (~10/25)', reel: '' },
+      { name: '세실극장 옥상 전망대', desc: '덕수궁이 한눈에 보이는 무료 전망대 (야외 엘리베이터)', reel: '' },
+      { name: '서울시청 하늘 전망대', desc: '시청 서편 8·9층, 서울 시내가 한눈에', reel: '' },
+      { name: '신아기념관 소품샵', desc: '라파르마 · 트롤스페이퍼(문구) · 소일베이커(세라믹)', reel: '' },
+      { name: '책방고래', desc: '사진·여행 좋아하면 꼭 가볼 책방 (을지로)', reel: '' },
+      { name: '피롤츠커피하우스 시청점', desc: '레트로한 킷사텐·다방 감성 카페 · 11:30~22:00', reel: '' },
+      { name: '커피앤시가렛', desc: '17층에서 도심 뷰 보며 커피 한 잔', reel: '' },
+      { name: '카페 로투스', desc: '드립 커피 맛집', reel: '' },
+      { name: '콘티뉴이티 을지로', desc: '망고 빙수 맛있는 카페', reel: '' },
+      { name: '라운드앤드', desc: '구움과자가 맛있는 정동길 베이커리', reel: '' },
+      { name: '엘리스파이 시청점', desc: '블루리본 파이·타르트 베이커리 · 주말 10:00~20:00', reel: '' },
+      { name: '덕수궁 리에제와플', desc: '돌담길 산책 필수템 벨기에 와플', reel: '' },
+      { name: '르풀', desc: '샐러드·샌드위치 올데이 브런치 카페', reel: '' },
     ],
-    dinner: DINNER },
+    dinner: [...DINNER,
+      { name: '조조칼국수', desc: '시청 직장인 사이 유명한 가성비 칼국수 · 10:00~21:30', reel: '' },
+      { name: '진주회관', desc: '1962년부터 이어온 진한 콩국수', reel: '' },
+      { name: '스시로 명동 성당점', desc: '오사카에서 건너온 초밥집', reel: '' },
+      { name: '이도다완', desc: '정동길 신상 이자카야', reel: '' },
+      { name: '오드하우스', desc: '저녁엔 와인과 함께하는 신아기념관 다이닝', reel: '' },
+    ] },
   '서울숲': { sub: '성수동',
     reels: ['https://www.instagram.com/reel/DYzdFrtxdcf/'],
     course: [
-      { name: '숲속 피크닉', desc: '거울연못·사슴 산책로 따라 힐링 피크닉', reel: '' },
+      { name: '한입 베이글', desc: '한입 크기 베이글 포장해서 피크닉 준비 (서울숲역 4분)', reel: '' },
+      { name: '서울숲', desc: '가족마당 큰 나무 밑 돗자리 피크닉 · 거울연못·사슴 산책로', reel: '' },
+      { name: '윤기', desc: '커피 한 잔 하며 쉬어가기 (@yoongicoffee.seoul)', reel: '' },
+      { name: '테우치멘이토', desc: '수타면 맛집', reel: '' },
+      { name: '무신사 백&캡 클럽', desc: '핫한 모자·가방 한가득, 자유롭게 착용해보기', reel: '' },
+      { name: '포셋', desc: '성수 매장 구경 (@poset.official)', reel: '' },
+      { name: '나나가챠', desc: '캡슐 뽑기 샵에서 가챠 한 판', reel: '' },
+      { name: '루에브르', desc: '입구부터 예쁜 옷·가방 편집숍', reel: '' },
+      { name: '네러티브 오브젝트', desc: '한국의 미 가득한 도자기 편집숍, 선물 고르기', reel: '' },
+      { name: '언포모', desc: '1만원대 빈티지 카메라 대여 · 신기한 카메라 구경', reel: '' },
       { name: '성수 아틀리에 길', desc: '소품샵·디자이너 편집숍·브랜드 팝업 투어', reel: '' },
     ],
-    dinner: DINNER },
+    // 서울숲은 실제 가게 목록 (주소 · 영업시간, BT=브레이크타임)
+    dinner: [
+      { name: '온량', desc: '서울숲4길 26-10 · 12:00~21:00', reel: '' },
+      { name: '빠오즈푸 서울숲직영점', desc: '왕십리로6길 13 · 11:30~21:30 (BT 15~17시)', reel: '' },
+      { name: '미테이블 서울숲성수본점', desc: '왕십리로8길 5 · 11:30~21:00', reel: '' },
+      { name: '서울숲누룽지통닭구이', desc: '왕십리로5길 10 · 16:00~23:00', reel: '' },
+      { name: '감요 성수 본점', desc: '왕십리로4길 28-8 2층 · 15:00~24:00', reel: '' },
+      { name: '꾸아 성수점', desc: '왕십리로 94-2 2층 · 11:00~21:00 (BT 15:30~17시)', reel: '' },
+      { name: '할머니의레시피', desc: '서울숲2길 44-12 · 11:30~21:00 (BT 15:30~17시)', reel: '' },
+      { name: '파이프그라운드 서울숲점', desc: '왕십리로 83-21 지하1층 · 10:30~21:30', reel: '' },
+      { name: '쵸리상경', desc: '서울숲4길 18-8 2층 · 11:00~22:00 (BT 15~17시)', reel: '' },
+      { name: '비사벌 전주 콩나물국밥', desc: '뜨끈한 국밥 + 차가운 모주 (서울숲역 1번 출구 근처)', reel: '' },
+    ] },
 };
 
 // ===== helpers =====
@@ -619,7 +671,8 @@ function confettiRain(ms) {
     confetti({ particleCount: 5, startVelocity: 0, gravity: .5, ticks: 400, spread: 360, scalar: 1.1, origin: { x: Math.random(), y: -.05 }, zIndex: 100 });
   }, 120);
 }
-const openAt = new Date(`${BIRTHDAY}T19:00:00`);
+// 편지 오픈: 한국 시간(KST=UTC+9) 생일 19:00으로 고정 — 폰 시간대/브라우저 날짜 해석과 무관하게
+const openAt = (([y, m, d]) => new Date(Date.UTC(y, m - 1, d, 19 - 9)))(BIRTHDAY.split('-').map(Number));
 
 // D-day 타이틀
 {
@@ -975,12 +1028,12 @@ $('#reelPick').onclick = () => {
   closeReel();
   choose(input);
 };
-// 만남 → 코스들(만남 1시간 뒤부터 18:30 전까지 30분 단위로 나눔) → 저녁
+// 만남 → 코스들(만남 1시간 뒤부터 18:30 전까지 15분 단위로 나눔) → 저녁
 function planStops(p) {
   const courses = [].concat(p.course); // 예전에 저장된 plan은 코스가 문자열 하나
   const hm = min => `${String(min / 60 | 0).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
   const [h, m] = p.time.split(':').map(Number), start = h * 60 + m + 60, dinner = 18 * 60 + 30;
-  const gap = Math.max(30, Math.floor((dinner - start) / courses.length / 30) * 30);
+  const gap = Math.max(15, Math.floor((dinner - start) / courses.length / 15) * 15);
   return [
     [p.time, `${p.place} 만남`],
     ...courses.map((c, k) => [hm(start + k * gap), k ? `${c} 하러 가기` : `${c} 데이트 시작`]),
@@ -992,7 +1045,7 @@ form.onsubmit = e => {
   e.preventDefault();
   const f = new FormData(e.target);
   const p = { time: f.get('time'), place: f.get('place'), course: f.getAll('course'), dinner: f.get('dinner') };
-  if (!p.time || !p.place || !p.course.length || !p.dinner) { shake(e.target); return toast('다 골라야 함'); }
+  if (!p.time || !p.place || !p.course.length || !p.dinner) { shake(e.target); return toast('다 골라야 해~~'); }
   plan = p;
   // 마일스톤 개수가 코스 수에 따라 달라서 매번 새로 그림
   const stops = planStops(p);
@@ -1195,7 +1248,7 @@ $('#btnOpen').onclick = requestLetter;
 $('#btnSafe').onclick = () => {
   if (Date.now() >= openAt) return requestLetter();
   shake($('#btnSafe'));
-  toast('습 19시까지 기다려~~');
+  toast('19시까지 기다려~~');
 };
 $('#btnReset').onclick = () => {
   if (!confirm('헐 데이트 코스 다시 고를거야??')) return;
@@ -1217,6 +1270,13 @@ $('#devLetter')?.addEventListener('click', () => {
   showLetter();
   requestLetter();
 });
+
+// 코스를 이미 확정했으면 잠금화면·전화·파티 없이 바로 편지(카운트다운) 화면
+if (state.confirmed) {
+  ['#lock', '#call'].forEach(s => $(s).classList.add('hidden'));
+  $('#main').classList.remove('hidden');
+  showLetter();
+}
 </script>
 </body>
 </html>
