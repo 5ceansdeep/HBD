@@ -534,13 +534,23 @@ const DINNER = [
   { name: '일식', desc: '깔끔하고 정갈하게', reel: '' },
 ];
 const AREAS = {
-  '한강': { sub: '망원 · 여의도 · 반포',
+  '한강': { sub: '자양 · 뚝섬',
     reels: ['https://www.instagram.com/reel/DdGeEv5S8ya/', 'https://www.instagram.com/reel/DbatWNGpLye/'],
     course: [
       { name: '피크닉 & 물멍', desc: '돗자리 & 테이블 빌려서 노을 시간에 강변에서 쉬기', reel: '' },
       { name: '따릉이 & 산책', desc: '해 질 녘 따릉이 타거나 강바람 맞으며 산책', reel: '' },
+      { name: '공백', desc: '자양역 · 자양번영로3길 37 (@0100coffee)', reel: '' },
+      { name: '소낙', desc: '자양역 · 자양번영로1길 24 (@cafe_sonak)', reel: '' },
+      { name: '어라운드자양', desc: '자양역 · 능동로6길 14', reel: '' },
+      { name: '옐로브릭', desc: '자양역 · 능동로3라길 4', reel: '' },
+      { name: '사적인 작업실', desc: '자양역 · 동일로 26', reel: '' },
+      { name: '홀리 러브스 러브', desc: '자양역 · 뚝섬로22길 73 (@hollyloveslove_cafe)', reel: '' },
     ],
-    dinner: DINNER },
+    dinner: [...DINNER,
+      { name: '릴버거', desc: '자양역 · 자양강변길 89', reel: '' },
+      { name: '산토로쿠', desc: '자양역 · 능동로 27 2층', reel: '' },
+      { name: '계탄집', desc: '자양역 · 능동로 31', reel: '' },
+    ] },
   '부평 평리단길': { sub: '평리단길 · 문화의거리',
     reels: ['https://www.instagram.com/reel/DdoQIBhTj6s/'],
     course: [
